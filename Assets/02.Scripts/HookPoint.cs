@@ -27,10 +27,7 @@ public class HookPoint : MonoBehaviour
 
     private void OnBecameVisible()
     {
-        if(GameManager.instance.isSlowMode())
-        {
-            state = State.VISIBLE;
-        }
+        state = State.VISIBLE;
     }
 
     private void OnBecameInvisible()

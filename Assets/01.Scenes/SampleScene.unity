@@ -510,9 +510,10 @@ GameObject:
   - component: {fileID: 641179746}
   - component: {fileID: 641179745}
   - component: {fileID: 641179744}
+  - component: {fileID: 641179748}
   m_Layer: 0
-  m_Name: Sphere
-  m_TagString: Untagged
+  m_Name: HookPoint
+  m_TagString: _HookPoint
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -603,6 +604,19 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &641179748
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 641179743}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b747fdd0139cbe3489288a8d1d97ac15, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  state: 0
 --- !u!1 &832575517
 GameObject:
   m_ObjectHideFlags: 0
@@ -1196,7 +1210,7 @@ GameObject:
   - component: {fileID: 1833514747}
   m_Layer: 0
   m_Name: Player
-  m_TagString: Untagged
+  m_TagString: _Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

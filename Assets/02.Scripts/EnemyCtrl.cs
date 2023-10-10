@@ -4,30 +4,41 @@ using UnityEngine;
 
 public class EnemyCtrl : MonoBehaviour
 {
-    private float coolTime = 2.0f;
-    private float curTime = 0.0f;
-    private int dd = 1;
+    private float detectionRange = 5.0f;
+    private float dist = 0.0f;
 
-    public float mvSpeed;
+    private GameObject player;
 
-    Transform tr;
+    private Transform tr;
+
+    // Enemy의 상태
+    public enum State
+    {
+        IDLE,
+        TRACE
+    }
+
+    public State state = State.IDLE;
 
     // Start is called before the first frame update
     void Start()
     {
-        mvSpeed = 5;
+        detectionRange = 5.0f;
+        player = GameObject.FindGameObjectWithTag("_Player");
         tr = gameObject.transform;
     }
 
     // Update is called once per frame
     void Update()
     {
-        if(curTime >= coolTime)
+        dist = Vector3.Distance(player.transform.position, tr.position);
+        if(dist <= detectionRange)
         {
-            curTime = 0.0f;
-            dd *= -1;
+            state = State.TRACE;
         }
-        tr.Translate(Vector3.forward * dd * mvSpeed * Time.deltaTime);
-        curTime += Time.deltaTime;
+        else
+        {
+            state = State.IDLE;
+        }
     }
 }
