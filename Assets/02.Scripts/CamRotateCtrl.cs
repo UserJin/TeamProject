@@ -27,8 +27,11 @@ public class CamRotateCtrl : MonoBehaviour
         float mouse_X = Input.GetAxis("Mouse X");
         float mouse_Y = Input.GetAxis("Mouse Y");
 
-        mx += mouse_X * mxTurnSpeed * Time.deltaTime;
-        my += mouse_Y * myTurnSpeed * Time.deltaTime;
+        //mx += mouse_X * mxTurnSpeed * Time.deltaTime;
+        //my += mouse_Y * myTurnSpeed * Time.deltaTime;
+        // 슬로우 모드에 영향을 받지 않기 위해 변경
+        mx += mouse_X * mxTurnSpeed * Time.unscaledDeltaTime;
+        my += mouse_Y * myTurnSpeed * Time.unscaledDeltaTime;
 
         my = Mathf.Clamp(my, -90f, 90f);
 
