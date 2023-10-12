@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using System;
 
 public class PlayerCtrl : MonoBehaviour
 {
@@ -201,6 +202,7 @@ public class PlayerCtrl : MonoBehaviour
     {
         yield return new WaitForSeconds(5.0f);
         isDamaged = false;
+        recoveryCoroutine = RecoveryCoolTime();
     }
 
     // 플레이어 피격시 발동 함수
@@ -209,6 +211,7 @@ public class PlayerCtrl : MonoBehaviour
         if(isDamaged)
         {
             StopCoroutine(recoveryCoroutine);
+            recoveryCoroutine = RecoveryCoolTime();
         }
         isDamaged = true;
         StartCoroutine(recoveryCoroutine);
@@ -216,6 +219,7 @@ public class PlayerCtrl : MonoBehaviour
         if(hp < 0)
         {
             state = State.DIE;
+            GameManager.instance.SendMessage("OnPlayerDie");
         }
     }
 
