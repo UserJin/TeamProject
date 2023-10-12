@@ -6,32 +6,51 @@ public class HookPoint : MonoBehaviour
 {
     public enum State
     {
-        INVISIBLE,
-        VISIBLE,
+        DISABLE,
         ONABLE
     }
 
-    public State state = State.INVISIBLE;
+    public State state;
 
     // Start is called before the first frame update
     void Start()
     {
-
+        state = State.ONABLE;
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+        CheckOnable();
     }
 
-    private void OnBecameVisible()
+    void CheckOnable()
     {
-        state = State.VISIBLE;
+        if(state == State.ONABLE)
+        {
+            gameObject.GetComponent<Renderer>().material.color = Color.green;
+        }
+        else
+        {
+            gameObject.GetComponent<Renderer>().material.color = Color.red;
+        }
     }
 
-    private void OnBecameInvisible()
+    public void ChangeState()
     {
-        state = State.INVISIBLE;
+        state = State.DISABLE;
+        StartCoroutine(ActivationCoolTime());
     }
+
+    public State GetState()
+    {
+        return state;
+    }
+
+    IEnumerator ActivationCoolTime()
+    {
+        yield return new WaitForSeconds(2.0f);
+        state = State.ONABLE;
+    }
+
 }

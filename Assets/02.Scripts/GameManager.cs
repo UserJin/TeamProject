@@ -10,6 +10,8 @@ public class GameManager : MonoBehaviour
     public float slowTime = 0.1f;
     private bool _isSlowMode;
 
+    //private bool isGameover;
+
     private void Awake()
     {
         if (instance == null)
@@ -28,6 +30,7 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         _isSlowMode = false;
+        //isGameover = false;
     }
 
     // Update is called once per frame

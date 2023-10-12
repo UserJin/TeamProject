@@ -9,6 +9,7 @@ TagManager:
   - _Ground
   - _Trap
   - _HookPoint
+  - _EnemyHookPoint
   layers:
   - Default
   - TransparentFX
