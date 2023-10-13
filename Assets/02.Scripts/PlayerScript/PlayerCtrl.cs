@@ -15,6 +15,17 @@ public class PlayerCtrl : MonoBehaviour
     public float jumpPower = 10.0f;
     public float dashPower = 1.0f;
     public float dashCoolTime = 2.0f; // 대쉬 사용가능 쿨타임
+    public float maxVelocity = 5.0f;
+
+    // 벽타기 관련 코드 (영상 참조)
+    public float wallCheckDistance = 1.0f;
+    private int groundLayer;
+    private int wallLayer;
+    private RaycastHit leftWall;
+    private RaycastHit rightWall;
+    private bool isWallLeft;
+    private bool isWallRight;
+    public float wallRunForce;
 
     public float hp; // 현재 체력
     public float maxHp = 100.0f; // 최대 체력
@@ -59,19 +70,24 @@ public class PlayerCtrl : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(state == State.IDLE)
-        {
-            RotateDir();
-            MoveInput();
-            CheckGround();
-            Jump();
-            Dash();
-        }
         if(state != State.DIE)
         {
+            if (state == State.IDLE)
+            {
+                RotateDir();
+                MoveInput();
+                CheckGround();
+                Jump();
+                Dash();
+            }
+            if (state != State.RUSH)
+            {
+                Wallcheck();
+                WallRun();
+            }
             CheckHp();
             Recvoery();
-            if(state != State.RUSH)
+            if (state != State.RUSH)
             {
                 Shoot();
             }
@@ -84,6 +100,10 @@ public class PlayerCtrl : MonoBehaviour
         {
             Move();
             PlayerGravity();
+        }
+        if (state == State.WALLRUN)
+        {
+            WallRunMovement();
         }
         rb.angularVelocity = Vector3.zero; // 오브젝트 충돌시 떨림 방지용
     }
@@ -105,6 +125,10 @@ public class PlayerCtrl : MonoBehaviour
         isDamaged = false;
         isReload = false;
         recoveryCoroutine = RecoveryCoolTime();
+        groundLayer = 1 << LayerMask.NameToLayer("GROUND");
+        wallLayer = 1 << LayerMask.NameToLayer("WALL");
+        wallRunForce = 10.0f;
+        maxVelocity = 10.0f;
 
         tr = GetComponent<Transform>();
         rb = GetComponent<Rigidbody>();
@@ -135,7 +159,7 @@ public class PlayerCtrl : MonoBehaviour
     // 점프 함수
     void Jump()
     {
-        if (Input.GetKeyDown(KeyCode.Space) && !isJumping)
+        if (Input.GetKeyDown(KeyCode.Space) && !isJumping && !GroundCheck())
         {
             isJumping = true;
             rb.AddForce(new Vector3(0, jumpPower, 0), ForceMode.Impulse);
@@ -154,6 +178,69 @@ public class PlayerCtrl : MonoBehaviour
             dashAvailable = false;
             StartCoroutine(DashCoolTime());
         }
+    }
+
+    void Wallcheck()
+    {
+        isWallLeft = Physics.Raycast(tr.position, cam.transform.right * -1, out leftWall, wallCheckDistance, wallLayer);
+        isWallRight = Physics.Raycast(tr.position, cam.transform.right, out rightWall, wallCheckDistance, wallLayer);
+    }
+
+    bool GroundCheck()
+    {
+        return !Physics.Raycast(tr.position, Vector3.down, 1.0f, groundLayer);
+    }
+
+    void WallRun()
+    {
+        if((isWallLeft || isWallRight) && v > 0 && GroundCheck() && Input.GetKey(KeyCode.Space))
+        {
+            if (state == State.IDLE)
+            {
+                state = State.WALLRUN;
+            }
+        }
+        else
+        {
+            if(state == State.WALLRUN)
+            {
+                rb.useGravity = true;
+                state = State.IDLE;
+            }
+        }
+    }
+
+    void WallRunMovement()
+    {
+        rb.useGravity = false;
+        //rb.velocity = new Vector3(rb.velocity.x, 0, rb.velocity.z);
+        LimitVelocity();
+        Debug.Log(rb.velocity);
+
+        Vector3 wallNormal = isWallRight ? rightWall.normal : leftWall.normal;
+
+        Vector3 wallForward = Vector3.Cross(wallNormal, transform.up);
+
+        if ((cam.transform.forward - wallForward).magnitude > (cam.transform.forward - -wallForward).magnitude)
+            wallForward = -wallForward;
+
+        // forward force
+        rb.AddForce(wallForward * wallRunForce, ForceMode.Force);
+    }
+
+    void LimitVelocity()
+    {
+        float _velocity_x = rb.velocity.x;
+        float _velocity_z = rb.velocity.z;
+        if(_velocity_x > 0)
+            _velocity_x = (_velocity_x < maxVelocity) ? _velocity_x : maxVelocity;
+        else if(_velocity_x < 0)
+            _velocity_x = (_velocity_x > -maxVelocity) ? _velocity_x : -maxVelocity;
+        if (_velocity_z > 0)
+            _velocity_z = (_velocity_z < maxVelocity) ? _velocity_z : maxVelocity;
+        else if (_velocity_z < 0)
+            _velocity_z = (_velocity_z > -maxVelocity) ? _velocity_z : -maxVelocity;
+        rb.velocity = new Vector3(_velocity_x, 0f, _velocity_z);
     }
 
     // 카메라의 방향과 플레이어의 방향 동기화 함수

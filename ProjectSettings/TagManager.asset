@@ -11,6 +11,8 @@ TagManager:
   - _HookPoint
   - _EnemyHookPoint
   - _GameUICanvas
+  - _Wall
+  - _Platform
   layers:
   - Default
   - TransparentFX
@@ -19,7 +21,7 @@ TagManager:
   - Water
   - UI
   - GROUND
-  - 
+  - WALL
   - 
   - 
   - 
