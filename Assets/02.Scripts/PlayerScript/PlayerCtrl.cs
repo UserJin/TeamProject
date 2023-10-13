@@ -26,6 +26,8 @@ public class PlayerCtrl : MonoBehaviour
     private bool isWallLeft;
     private bool isWallRight;
     public float wallRunForce;
+    public float wallJumpUpForce;
+    public float wallJumpSideForce;
 
     public float hp; // 현재 체력
     public float maxHp = 100.0f; // 최대 체력
@@ -127,8 +129,10 @@ public class PlayerCtrl : MonoBehaviour
         recoveryCoroutine = RecoveryCoolTime();
         groundLayer = 1 << LayerMask.NameToLayer("GROUND");
         wallLayer = 1 << LayerMask.NameToLayer("WALL");
-        wallRunForce = 10.0f;
-        maxVelocity = 10.0f;
+        wallRunForce = 20.0f;
+        wallJumpUpForce = 5.0f;
+        wallJumpSideForce = 7.0f;
+        maxVelocity = 15.0f;
 
         tr = GetComponent<Transform>();
         rb = GetComponent<Rigidbody>();
@@ -180,24 +184,36 @@ public class PlayerCtrl : MonoBehaviour
         }
     }
 
+    // 캐릭터의 옆에 벽이 있는지 확인하는 함수
     void Wallcheck()
     {
         isWallLeft = Physics.Raycast(tr.position, cam.transform.right * -1, out leftWall, wallCheckDistance, wallLayer);
         isWallRight = Physics.Raycast(tr.position, cam.transform.right, out rightWall, wallCheckDistance, wallLayer);
     }
 
+    // 캐릭터가 공중에 있는지 확인하는 함수
     bool GroundCheck()
     {
-        return !Physics.Raycast(tr.position, Vector3.down, 1.0f, groundLayer);
+        return !Physics.Raycast(tr.position, Vector3.down, 1.1f, groundLayer);
     }
 
+    // 캐릭터 벽타기 상태 변환 함수
     void WallRun()
     {
-        if((isWallLeft || isWallRight) && v > 0 && GroundCheck() && Input.GetKey(KeyCode.Space))
+        if((isWallLeft || isWallRight) && v > 0 && GroundCheck())
         {
-            if (state == State.IDLE)
+            if(Input.GetKey(KeyCode.Space))
             {
-                state = State.WALLRUN;
+                if (state == State.IDLE)
+                {
+                    state = State.WALLRUN;
+                }
+            }
+            else if(Input.GetKeyUp(KeyCode.Space))
+            {
+                rb.useGravity = true;
+                state = State.IDLE;
+                WallJump();
             }
         }
         else
@@ -210,6 +226,7 @@ public class PlayerCtrl : MonoBehaviour
         }
     }
 
+    // 캐릭터 벽타기 이동 함수(fixedUpdate)
     void WallRunMovement()
     {
         rb.useGravity = false;
@@ -228,6 +245,18 @@ public class PlayerCtrl : MonoBehaviour
         rb.AddForce(wallForward * wallRunForce, ForceMode.Force);
     }
 
+    // 벽 점프 함수
+    void WallJump()
+    {
+        Vector3 wallNormal = isWallRight ? rightWall.normal : leftWall.normal;
+
+        Vector3 dir = transform.up * wallJumpUpForce + wallNormal * wallJumpSideForce;
+
+        rb.velocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
+        rb.AddForce(dir, ForceMode.Impulse);
+    }
+
+    // 캐릭터 속도 제한 함수
     void LimitVelocity()
     {
         float _velocity_x = rb.velocity.x;
