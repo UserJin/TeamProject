@@ -39,4 +39,9 @@ public class ScoreManager
         if (score >= 10000) s = "A";
         return s;
     }
+
+    public void CalCombo(int _combo)
+    {
+        score += _combo * 500;
+    }
 }

@@ -1,29 +1,39 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public class CamRotateCtrl : MonoBehaviour
 {
-    public float mxTurnSpeed = 10.0f;
-    public float myTurnSpeed = 30.0f;
+    public float mxTurnSpeed;
+    public float myTurnSpeed;
 
     private float mx = 0;
     private float my = 0;
+
+    public bool isPause; // 게임 정지 여부
 
     // Start is called before the first frame update
     void Start()
     {
         mxTurnSpeed = 400.0f;
         myTurnSpeed = 400.0f;
-
-        Cursor.visible = false;
-        Cursor.lockState = CursorLockMode.Locked;
+        isPause = false;
+        GameManager.instance.OnGamePause += ChangePause;
     }
 
     // Update is called once per frame
     void Update()
     {
+        if(!isPause)
+        {
+            RotateCamera();
+        }
+    }
 
+    // 마우스 회전 함수
+    void RotateCamera()
+    {
         float mouse_X = Input.GetAxis("Mouse X");
         float mouse_Y = Input.GetAxis("Mouse Y");
 
@@ -36,5 +46,10 @@ public class CamRotateCtrl : MonoBehaviour
         my = Mathf.Clamp(my, -90f, 90f);
 
         transform.eulerAngles = new Vector3(-my, mx, 0);
+    }
+
+    void ChangePause(object sender, EventArgs e)
+    {
+        isPause = !isPause;
     }
 }

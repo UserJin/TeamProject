@@ -10,19 +10,27 @@ public class PlayerCtrl : MonoBehaviour
 
     // 멤버 변수 목록
     // 체력, 속도
+    // 디버깅하기 쉽게 public으로 선언, 이후에 private로 변경 필요
     public float moveSpeed = 10.0f;
     public float jumpPower = 10.0f;
     public float dashPower = 1.0f;
+    public float dashCoolTime = 2.0f; // 대쉬 사용가능 쿨타임
+
     public float hp; // 현재 체력
     public float maxHp = 100.0f; // 최대 체력
     public float hpRecoveryAmountPerSec = 10.0f; // 초당 회복량
+    public float recoveryCoolTime = 5.0f; // 회복 쿨타임
+
+    [SerializeField]
+    float reloadCoolTime; // 사격 쿨타임
 
     [SerializeField]
     private float grav = -0.1f; // 플레이어에게 추가로 적용되는 중력
 
     private bool isJumping; // 현재 점프 여부
     private bool dashAvailable; // 대쉬 사용 가능 여부
-    private bool isDamaged; // 최근 5초내 피해 적용 여부
+    private bool isDamaged; // 최근 5초내 피해 여부
+    private bool isReload; // 재장전 상태 여부
 
     private float h;
     private float v;
@@ -45,24 +53,7 @@ public class PlayerCtrl : MonoBehaviour
     State state = State.IDLE;
     void Start()
     {
-        moveSpeed = 10.0f;
-        jumpPower = 10.0f;
-        dashPower = 1.0f;
-        h = 0.0f;
-        v = 0.0f;
-        hp = maxHp;
-        hpRecoveryAmountPerSec = 10.0f;
-        dashAvailable = true;
-        isJumping = false;
-        isDamaged = false;
-        recoveryCoroutine = RecoveryCoolTime();
-
-        tr = GetComponent<Transform>();
-        rb = GetComponent<Rigidbody>();
-        cam = Camera.main;
-
-        // x축 y축 회전 잠금
-        rb.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
+        InitPlayer();
     }
 
     // Update is called once per frame
@@ -94,6 +85,35 @@ public class PlayerCtrl : MonoBehaviour
             Move();
             PlayerGravity();
         }
+        rb.angularVelocity = Vector3.zero; // 오브젝트 충돌시 떨림 방지용
+    }
+
+    void InitPlayer()
+    {
+        moveSpeed = 10.0f;
+        jumpPower = 10.0f;
+        dashPower = 10.0f;
+        h = 0.0f;
+        v = 0.0f;
+        hp = maxHp;
+        hpRecoveryAmountPerSec = 10.0f;
+        recoveryCoolTime = 5.0f;
+        dashCoolTime = 2.0f;
+        reloadCoolTime = 1.0f;
+        dashAvailable = true;
+        isJumping = false;
+        isDamaged = false;
+        isReload = false;
+        recoveryCoroutine = RecoveryCoolTime();
+
+        tr = GetComponent<Transform>();
+        rb = GetComponent<Rigidbody>();
+        cam = Camera.main;
+
+        // x축 y축 회전 잠금
+        rb.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
+
+        GameManager.instance.OnGamePause += GamePause;
     }
 
     // 이동 입력을 받는 함수
@@ -154,7 +174,6 @@ public class PlayerCtrl : MonoBehaviour
     {
         if(rb.velocity.y < 0)
         {
-            //Debug.DrawRay(tr.position, Vector3.down, Color.red);
             RaycastHit hit;
             if(Physics.Raycast(rb.position, Vector3.down, out hit, 1))
             {
@@ -171,18 +190,22 @@ public class PlayerCtrl : MonoBehaviour
     void Shoot()
     {
         RaycastHit _hit;
-        if(Input.GetMouseButtonDown(0))
+        if(Input.GetMouseButtonDown(0) && !isReload)
         {
-            if(Physics.Raycast(rb.position, cam.transform.forward, out _hit))
+            Debug.DrawRay(cam.transform.position, cam.transform.forward * 100.0f, Color.red);
+            if(Physics.Raycast(cam.transform.position, cam.transform.forward * 100.0f, out _hit))
             {
                 if (_hit.transform.gameObject.CompareTag("_Enemy"))
                 {
                     _hit.transform.GetComponent<EnemyCtrl>().EnemyHit();
                 }
             }
+            isReload = true;
+            StartCoroutine(Reload());
         }
     }
 
+    // 체력 자동 회복 코드
     void Recvoery()
     {
         if(!isDamaged && hp < maxHp)
@@ -194,15 +217,24 @@ public class PlayerCtrl : MonoBehaviour
     // 대쉬 쿨타임 코루틴
     IEnumerator DashCoolTime()
     {
-        yield return new WaitForSeconds(2.0f);
+        yield return new WaitForSeconds(dashCoolTime);
         dashAvailable = true;
     }
 
+    // 회복 쿨타임 코루틴
+    // 피격시 5초 동안 회복 불가능
     IEnumerator RecoveryCoolTime()
     {
-        yield return new WaitForSeconds(5.0f);
+        yield return new WaitForSeconds(recoveryCoolTime);
         isDamaged = false;
         recoveryCoroutine = RecoveryCoolTime();
+    }
+
+    // 사격 쿨타임 코루틴
+    IEnumerator Reload()
+    {
+        yield return new WaitForSeconds(reloadCoolTime);
+        isReload = false;
     }
 
     // 플레이어 피격시 발동 함수
@@ -216,13 +248,14 @@ public class PlayerCtrl : MonoBehaviour
         isDamaged = true;
         StartCoroutine(recoveryCoroutine);
         hp -= damage;
-        if(hp < 0)
+        if(hp < 0) // 플레이어 사망시 사망 이벤트 발생?
         {
             state = State.DIE;
             GameManager.instance.SendMessage("OnPlayerDie");
         }
     }
 
+    // 플레이어의 점프 상태 변환 함수
     public void ChangeJumpState(bool s)
     {
         isJumping = s;
@@ -234,12 +267,12 @@ public class PlayerCtrl : MonoBehaviour
         state = s;
     }
 
-    // 떨림 관련 문제 해결용
-    private void OnCollisionExit(Collision collision)
+    void GamePause(object sender, EventArgs e)
     {
-        rb.angularVelocity = Vector3.zero;
+        state = State.DIE;
     }
 
+    // 플레이어의 현재 체력을 UI에 반영
     void CheckHp()
     {
         hpBar.value = hp / maxHp;

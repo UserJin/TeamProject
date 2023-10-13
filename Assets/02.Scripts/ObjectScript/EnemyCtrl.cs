@@ -28,6 +28,7 @@ public class EnemyCtrl : MonoBehaviour
     {
         detectionRange = 5.0f;
         player = GameObject.FindGameObjectWithTag("_Player");
+        hookPoint = gameObject.transform.GetChild(0).gameObject;
         tr = gameObject.transform;
         hookPoint.SetActive(false);
     }
@@ -61,5 +62,6 @@ public class EnemyCtrl : MonoBehaviour
     public void EnemyDie()
     {
         state = State.DIE;
+        ComboManager.instance.AddCombo();
     }
 }

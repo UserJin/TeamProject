@@ -18,9 +18,9 @@ public class FocusCtrl : MonoBehaviour
 
     private float rushPower; // 돌진에 적용되는 힘
     private float detectionRange; // 조준상태에서 갈고리 포인트 탐지 범위
-    private float focusingRange = 0.25f; // 화면중 일부 범위내의 갈고리만 탐지되도록 하는 값
-    public float focusingGage = 0.0f; // 집중 게이지, 초당 1회복
-    public float maxFocusingGage = 5.0f; // 집중 최대 게이지
+    private float focusingRange; // 화면중 일부 범위내의 갈고리만 탐지되도록 하는 값
+    public float focusingGage; // 집중 게이지, 초당 1회복
+    public float maxFocusingGage; // 집중 최대 게이지
 
     [SerializeField]
     private float targetDistance;
@@ -49,8 +49,10 @@ public class FocusCtrl : MonoBehaviour
         targetDistance = 100.0f;
 
         detectionRange = 12.0f;
+        focusingRange = 0.25f;
         rushPower = 100.0f;
-        maxFocusingGage = 5.0f;
+        focusingGage = 0.0f;
+        maxFocusingGage = 3.0f;
         focusingGage = maxFocusingGage;
         state = State.IDLE;
 
@@ -189,7 +191,7 @@ public class FocusCtrl : MonoBehaviour
             if (_dist <= 1.0f)
             {
                 player.GetComponent<Rigidbody>().velocity = Vector3.zero;
-                // 이곳에 적 처치 함수 추가
+                target.GetComponentInParent<EnemyCtrl>().SendMessage("EnemyDie"); // 적 처치 메시지 보내기
                 player.GetComponent<PlayerCtrl>().ChangeJumpState(true); // 플레이어의 점프 여부를 참으로 변경
                 p_rb.AddForce(Vector3.up * 10.0f, ForceMode.Impulse);
                 target = null;
