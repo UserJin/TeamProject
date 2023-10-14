@@ -22,7 +22,11 @@ TagManager:
   - UI
   - GROUND
   - WALL
+<<<<<<< HEAD
   - 
+=======
+  - BULLET
+>>>>>>> master
   - 
   - 
   - 
