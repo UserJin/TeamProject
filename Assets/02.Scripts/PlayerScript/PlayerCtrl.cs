@@ -165,6 +165,7 @@ public class PlayerCtrl : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Space) && !isJumping && !GroundCheck())
         {
+            Debug.Log("ddd");
             isJumping = true;
             rb.AddForce(new Vector3(0, jumpPower, 0), ForceMode.Impulse);
         }

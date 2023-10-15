@@ -17,6 +17,8 @@ public class GameManager : MonoBehaviour
     public ScoreManager scoreManager;
 
     public TMP_Text cur_score;
+    public TMP_Text cur_combo;
+    public Image crosshair;
 
     // 슬로우모드 느려짐 배율
     public float slowTime;
@@ -81,6 +83,7 @@ public class GameManager : MonoBehaviour
         _gameClearPannel.SetActive(false);
         _gameoverPannel.SetActive(false);
         scoreManager = new ScoreManager();
+        SetUI(true);
     }
 
     // 슬로우 모드 활성화
@@ -112,6 +115,7 @@ public class GameManager : MonoBehaviour
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.None;
         OnGamePause?.Invoke(this, EventArgs.Empty);
+        SetUI(false);
         _gameoverPannel.SetActive(true);
         Time.timeScale = 0.0f;
     }
@@ -126,7 +130,9 @@ public class GameManager : MonoBehaviour
         OnGamePause?.Invoke(this, EventArgs.Empty);
         _gameClearPannel.SetActive(true);
         _gameClearPannel.transform.Find("Score").GetComponent<TMP_Text>().text = $"Score: {scoreManager.Score}";
+        _gameClearPannel.transform.Find("MaxCombo").GetComponent<TMP_Text>().text = $"Max combo: {ComboManager.instance.maxCombo}";
         _gameClearPannel.transform.Find("Rank").GetComponent<TMP_Text>().text = $"Rank: {scoreManager.CheckRank()}";
+        SetUI(false);
         Time.timeScale = 0.0f;
     }
 
@@ -139,6 +145,14 @@ public class GameManager : MonoBehaviour
 
     void SetScore()
     {
-        cur_score.text = $"Score: {scoreManager.Score}";
+        cur_score.text = $"Score: {scoreManager.Score:00000}";
+    }
+
+    // UI 활성화 및 비활성화 함수
+    void SetUI(bool b)
+    {
+        cur_combo.gameObject.SetActive(b);
+        cur_score.gameObject.SetActive(b);
+        crosshair.gameObject.SetActive(b);
     }
 }
