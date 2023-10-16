@@ -8,6 +8,8 @@ public class CamRotateCtrl : MonoBehaviour
     public float mxTurnSpeed;
     public float myTurnSpeed;
 
+    public GameObject player;
+
     private float mx = 0;
     private float my = 0;
 

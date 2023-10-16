@@ -74,9 +74,10 @@ public class PlayerCtrl : MonoBehaviour
     {
         if(state != State.DIE)
         {
+            RotateDir();
             if (state == State.IDLE)
             {
-                RotateDir();
+                //RotateDir();
                 MoveInput();
                 CheckGround();
                 Jump();
@@ -276,8 +277,9 @@ public class PlayerCtrl : MonoBehaviour
     // 카메라의 방향과 플레이어의 방향 동기화 함수
     void RotateDir()
     {
-        tr.localRotation = Camera.main.transform.rotation;
-        transform.localRotation = new Quaternion(0, transform.localRotation.y, 0, transform.localRotation.w);
+        //tr.localRotation = cam.transform.rotation;
+        //transform.localRotation = new Quaternion(0, transform.localRotation.y, 0, transform.localRotation.w);
+        transform.eulerAngles = new Vector3(0, Camera.main.transform.eulerAngles.y, 0);
     }
 
     // 플레이어에게 적용되는 추가 중력
@@ -394,39 +396,4 @@ public class PlayerCtrl : MonoBehaviour
     {
         hpBar.value = hp / maxHp;
     }
-
-
-    // velocity 이동 관련 코드
-    //void MoveInput()
-    //{
-    //    float h = Input.GetAxis("Horizontal");
-    //    float v = Input.GetAxis("Vertical");
-
-    //    //Vector3 dir = new Vector3(h, 0, v);
-    //    Vector3 dir = tr.right * h + tr.forward * v;
-    //    dir = dir.normalized * moveSpeed * moveSpeed;
-    //    dir += new Vector3(0, y, 0);
-
-    //    //tr.Translate(dir * moveSpeed * Time.deltaTime);
-    //    //rb.MovePosition(tr.position + dir * moveSpeed * Time.deltaTime);
-    //    rb.velocity = dir;
-    //}
-    //void Jump()
-    //{
-    //    if (Input.GetKeyDown(KeyCode.Space) && !isJumping)
-    //    {
-    //        isJumping = true;
-    //        //rb.AddForce(new Vector3(0, jumpPower, 0), ForceMode.Impulse);
-    //        y = jumpPower;
-    //    }
-    //}
-    //void PlayerGravity()
-    //{
-    //    //rb.AddForce(new Vector3(0, grav, 0), ForceMode.Impulse);
-    //    if (y >= -10.0f)
-    //    {
-    //        y -= 0.1f;
-    //    }
-
-    //}
 }
