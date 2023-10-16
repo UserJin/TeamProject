@@ -74,10 +74,8 @@ public class PlayerCtrl : MonoBehaviour
     {
         if(state != State.DIE)
         {
-            RotateDir();
             if (state == State.IDLE)
             {
-                //RotateDir();
                 MoveInput();
                 CheckGround();
                 Jump();
@@ -274,7 +272,7 @@ public class PlayerCtrl : MonoBehaviour
         rb.velocity = new Vector3(_velocity_x, 0f, _velocity_z);
     }
 
-    // 카메라의 방향과 플레이어의 방향 동기화 함수
+    // 카메라의 방향과 플레이어의 방향 동기화 함수 - 일단 비활성화
     void RotateDir()
     {
         //tr.localRotation = cam.transform.rotation;

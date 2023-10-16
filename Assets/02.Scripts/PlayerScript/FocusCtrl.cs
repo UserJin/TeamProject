@@ -19,6 +19,9 @@ public class FocusCtrl : MonoBehaviour
     private float rushPower; // 돌진에 적용되는 힘
     private float detectionRange; // 조준상태에서 갈고리 포인트 탐지 범위
     private float focusingRange; // 화면중 일부 범위내의 갈고리만 탐지되도록 하는 값
+
+    public float enemyRushPower;
+
     public float focusingGage; // 집중 게이지, 초당 1회복
     public float maxFocusingGage; // 집중 최대 게이지
 
@@ -53,6 +56,7 @@ public class FocusCtrl : MonoBehaviour
         rushPower = 100.0f;
         focusingGage = 0.0f;
         maxFocusingGage = 3.0f;
+        enemyRushPower = 10.0f;
         focusingGage = maxFocusingGage;
         state = State.IDLE;
 
@@ -74,14 +78,22 @@ public class FocusCtrl : MonoBehaviour
             {
                 RushToTarget();
             }
-            else if(state == State.RUSHTOENEMY)
-            {
-                RushToEnemy();
-            }
+            //else if(state == State.RUSHTOENEMY)
+            //{
+            //    RushToEnemy();
+            //}
             if(focusingGage < maxFocusingGage && state != State.FOCUS)
             {
                 RecoveryFocusingGage();
             }
+        }
+    }
+
+    private void FixedUpdate()
+    {
+        if (state == State.RUSHTOENEMY)
+        {
+            RushToEnemy();
         }
     }
 
@@ -160,6 +172,7 @@ public class FocusCtrl : MonoBehaviour
             }
             else if(target.CompareTag("_EnemyHookPoint"))
             {
+                p_rb.useGravity = false;
                 state = State.RUSHTOENEMY;
             }
         }
@@ -186,13 +199,14 @@ public class FocusCtrl : MonoBehaviour
     {
         if (target != null && state == State.RUSHTOENEMY)
         {
-            p_tr.position = Vector3.Lerp(p_tr.position, target.transform.position, 0.05f);
+            p_tr.position = Vector3.Lerp(p_tr.position, target.transform.position, Time.deltaTime * enemyRushPower);
             float _dist = Vector3.Distance(p_tr.position, target.transform.position);
             if (_dist <= 1.0f)
             {
                 player.GetComponent<Rigidbody>().velocity = Vector3.zero;
                 target.GetComponentInParent<EnemyCtrl>().SendMessage("EnemyDie"); // 적 처치 메시지 보내기
                 player.GetComponent<PlayerCtrl>().ChangeJumpState(true); // 플레이어의 점프 여부를 참으로 변경
+                p_rb.useGravity = true;
                 p_rb.AddForce(Vector3.up * 10.0f, ForceMode.Impulse);
                 target = null;
                 targetDistance = 100.0f;

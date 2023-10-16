@@ -16,9 +16,6 @@ public class GameManager : MonoBehaviour
     // 점수 관련 매니저
     public ScoreManager scoreManager;
 
-    // 디버그용
-    public TMP_Text cur_rotation;
-
     public TMP_Text cur_score;
     public TMP_Text cur_combo;
     public Image crosshair;
@@ -72,7 +69,7 @@ public class GameManager : MonoBehaviour
             playTime += Time.unscaledDeltaTime;
             SetScore();
         }
-        if (Input.GetKeyDown(KeyCode.Escape)) Application.Quit();
+        if (Input.GetKeyDown(KeyCode.Escape)) Application.Quit(); // esc누르면 종료
     }
 
     // 변수 초기화 함수
@@ -150,7 +147,6 @@ public class GameManager : MonoBehaviour
     void SetScore()
     {
         cur_score.text = $"Score: {scoreManager.Score:00000}";
-        cur_rotation.text = $"{GameObject.Find("Player").transform.rotation.y} / {Camera.main.transform.rotation.y}";
     }
 
     // UI 활성화 및 비활성화 함수

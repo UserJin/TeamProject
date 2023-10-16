@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using TMPro;
 
 public class CamRotateCtrl : MonoBehaviour
 {
@@ -31,6 +32,11 @@ public class CamRotateCtrl : MonoBehaviour
         {
             RotateCamera();
         }
+    }
+
+    private void FixedUpdate()
+    {
+        player.transform.eulerAngles = new Vector3(0, mx, 0); // 플레이어 방향 동기화
     }
 
     // 마우스 회전 함수
