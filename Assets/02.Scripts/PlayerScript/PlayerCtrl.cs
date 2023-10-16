@@ -176,7 +176,12 @@ public class PlayerCtrl : MonoBehaviour
         if(Input.GetKeyDown(KeyCode.LeftShift) && dashAvailable)
         {
             Vector3 dir = tr.right * h + tr.forward * v + tr.up * 0.1f;
+            if (h == 0 && v == 0)
+            {
+                dir = tr.forward * 1 + tr.up * 0.1f;
+            }
             dir = dir.normalized;
+            
 
             rb.AddForce(dir * dashPower, ForceMode.Impulse);
             dashAvailable = false;

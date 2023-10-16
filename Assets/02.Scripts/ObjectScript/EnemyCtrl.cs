@@ -89,9 +89,12 @@ public class EnemyCtrl : MonoBehaviour
     public void Force2Hat()
     {
         GameObject hat = tr.Find("Hat").gameObject;
-        hat.transform.SetParent(null);
-        hat.GetComponent<Rigidbody>().isKinematic = false;
-        hat.GetComponent<Rigidbody>().AddForce((tr.position - player.transform.position).normalized * 5.0f + Vector3.up, ForceMode.Impulse);
+        if(hat != null)
+        {
+            hat.transform.SetParent(null);
+            hat.GetComponent<Rigidbody>().isKinematic = false;
+            hat.GetComponent<Rigidbody>().AddForce((tr.position - player.transform.position).normalized * 5.0f + Vector3.up, ForceMode.Impulse);
+        }
     }
 
     // 적이 hit상태일때 플레이어가 rush하면 실행

@@ -13,6 +13,7 @@ public class FocusCtrl : MonoBehaviour
     public GameObject sliderFill;
     public Image fill;
 
+    CapsuleCollider p_cl;
     Rigidbody p_rb;
     Transform p_tr;
 
@@ -47,6 +48,7 @@ public class FocusCtrl : MonoBehaviour
         player = GameObject.FindGameObjectWithTag("_Player");
         p_rb = player.GetComponent<Rigidbody>();
         p_tr = player.GetComponent<Transform>();
+        p_cl = player.GetComponent<CapsuleCollider>();
 
         target = null;
         targetDistance = 100.0f;
@@ -106,22 +108,24 @@ public class FocusCtrl : MonoBehaviour
         int idx = 0;
         foreach (GameObject point in hookPoints) points[idx++] = point;
         foreach (GameObject point in enemyHookPoints) points[idx++] = point;
+        // 갈고리 포인트 + 적 갈고리 포인트 목록
 
         if (points != null)
         {
             foreach(GameObject point in points)
             {
-                HookPoint.State _state = point.GetComponent<HookPoint>().GetState();
-                if(Vector3.Distance(this.transform.position, point.transform.position) < detectionRange && _state == HookPoint.State.ONABLE)
+                HookPoint.State _state = point.GetComponent<HookPoint>().GetState(); // 갈고리 포인트 상태
+                if(Vector3.Distance(this.transform.position, point.transform.position) < detectionRange && _state == HookPoint.State.ONABLE) // 일정 범위 이내 + 갈고리 사용 가능 상태
                 {
-                    Vector3 screenPoint = cam.WorldToViewportPoint(point.transform.position);
-                    if(screenPoint.x > focusingRange && screenPoint.x < 1-focusingRange && screenPoint.y > focusingRange && screenPoint.y < 1 - focusingRange)
+                    Vector3 screenPoint = cam.WorldToViewportPoint(point.transform.position); // 해당 갈고리 화면상 위치
+                    if(screenPoint.x > focusingRange && screenPoint.x < 1-focusingRange && screenPoint.y > focusingRange && screenPoint.y < 1 - focusingRange) // 일정 범위 이내라면
                     {
-                        Vector2 screenPoint2D = screenPoint;
-                        if (screenPoint2D.magnitude < targetDistance && screenPoint.z >= 0)
+                        Vector2 screenPoint2D = screenPoint; // 2D 좌표로 변경
+                        Vector2 tmp = new Vector2(0.5f, 0.5f) - screenPoint2D; // 중앙 값과 차이만 낢김
+                        if (tmp.magnitude < targetDistance && screenPoint.z >= 0) // 기존 타겟의 거리보다 가까우면 변경
                         {
                             target = point;
-                            targetDistance = screenPoint.magnitude;
+                            targetDistance = tmp.magnitude;
                         }
                     }
                 }
@@ -146,6 +150,7 @@ public class FocusCtrl : MonoBehaviour
             // 타겟이 있을 때만 돌진
             if(target != null)
             {
+                p_cl.isTrigger = true; // 일시적으로 충돌판정 X
                 target.GetComponent<HookPoint>().ChangeState();
                 Rush();
             }
@@ -191,6 +196,7 @@ public class FocusCtrl : MonoBehaviour
                 targetDistance = 100.0f;
                 state = State.IDLE;
                 player.GetComponent<PlayerCtrl>().ChangeState(PlayerCtrl.State.IDLE);
+                p_cl.isTrigger = false;
             }
         }
     }
@@ -212,6 +218,7 @@ public class FocusCtrl : MonoBehaviour
                 targetDistance = 100.0f;
                 state = State.IDLE;
                 player.GetComponent<PlayerCtrl>().ChangeState(PlayerCtrl.State.IDLE);
+                p_cl.isTrigger = false;
             }
         }
     }
