@@ -79,10 +79,13 @@ public class EnemyCtrl : MonoBehaviour
     // 적이 플레이어의 총에 피격 시 실행
     public void EnemyHit()
     {
-        state = State.HIT;
-        Force2Hat();
-        hookPoint.SetActive(true);
-        CancelInvoke("Fire");
+        if(state != State.HIT)
+        {
+            state = State.HIT;
+            Force2Hat();
+            hookPoint.SetActive(true);
+            CancelInvoke("Fire");
+        }
     }
 
     //모자 날려버리기
