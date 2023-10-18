@@ -79,7 +79,7 @@ public class EnemyCtrl : MonoBehaviour
     // 적이 플레이어의 총에 피격 시 실행
     public void EnemyHit()
     {
-        if(state != State.HIT)
+        if(state != State.DIE && state != State.HIT)
         {
             state = State.HIT;
             Force2Hat();
