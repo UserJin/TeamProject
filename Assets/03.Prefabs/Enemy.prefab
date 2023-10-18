@@ -509,6 +509,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 86697156d78eb674cb94e766a141455d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  expEffect: {fileID: 1121192042590650, guid: e1b08032bec16ba4eb1ae23cbd572664, type: 3}
   state: 0
 --- !u!136 &5457931250373409003
 CapsuleCollider:

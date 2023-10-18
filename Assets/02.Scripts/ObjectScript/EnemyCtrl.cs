@@ -10,7 +10,7 @@ public class EnemyCtrl : MonoBehaviour
 
     private GameObject player;
     private GameObject hookPoint;
-    public GameObject explosionObject;
+    public GameObject expEffect;
 
     private Transform tr;
 
@@ -97,6 +97,7 @@ public class EnemyCtrl : MonoBehaviour
         if(hat != null)
         {
             hat.transform.SetParent(null);
+            hat.GetComponent<Rigidbody>().useGravity = true;
             hat.GetComponent<Rigidbody>().isKinematic = false;
             hat.GetComponent<Rigidbody>().AddForce((tr.position - player.transform.position).normalized * 5.0f + Vector3.up, ForceMode.Impulse);
         }
@@ -107,7 +108,14 @@ public class EnemyCtrl : MonoBehaviour
     {
         state = State.DIE;
         ComboManager.instance.AddCombo();
+        ExplosionDie();
         CancelInvoke("Fire");
         Destroy(gameObject);
+    }
+
+    void ExplosionDie()
+    {
+        GameObject exp = Instantiate(expEffect, transform.position, Quaternion.identity);
+        Destroy(exp, 1f);
     }
 }
