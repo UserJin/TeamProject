@@ -10,6 +10,7 @@ public class EnemyCtrl : MonoBehaviour
 
     private GameObject player;
     private GameObject hookPoint;
+    public GameObject explosionObject;
 
     private Transform tr;
 
@@ -107,5 +108,6 @@ public class EnemyCtrl : MonoBehaviour
         state = State.DIE;
         ComboManager.instance.AddCombo();
         CancelInvoke("Fire");
+        Destroy(gameObject);
     }
 }

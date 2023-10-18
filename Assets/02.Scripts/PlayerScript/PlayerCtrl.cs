@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.SceneManagement;
 using UnityEngine;
 using UnityEngine.UI;
 using System;
@@ -52,6 +53,7 @@ public class PlayerCtrl : MonoBehaviour
     private Rigidbody rb;
 
     public Slider hpBar;
+    public AudioSource audioSource;
 
     IEnumerator recoveryCoroutine; // 자동 회복 코루틴
 
@@ -92,6 +94,7 @@ public class PlayerCtrl : MonoBehaviour
             {
                 Shoot();
             }
+            PlayerFall(); // 플레이어 낙하 확인 함수
         }
     }
 
@@ -135,6 +138,7 @@ public class PlayerCtrl : MonoBehaviour
 
         tr = GetComponent<Transform>();
         rb = GetComponent<Rigidbody>();
+        audioSource = GetComponent<AudioSource>();
         cam = Camera.main;
 
         // x축 y축 회전 잠금
@@ -236,7 +240,7 @@ public class PlayerCtrl : MonoBehaviour
         rb.useGravity = false;
         //rb.velocity = new Vector3(rb.velocity.x, 0, rb.velocity.z);
         LimitVelocity();
-        Debug.Log(rb.velocity);
+        //Debug.Log(rb.velocity);
 
         Vector3 wallNormal = isWallRight ? rightWall.normal : leftWall.normal;
 
@@ -310,7 +314,7 @@ public class PlayerCtrl : MonoBehaviour
         RaycastHit _hit;
         if(Input.GetMouseButtonDown(0) && !isReload)
         {
-            Debug.DrawRay(cam.transform.position, cam.transform.forward * 100.0f, Color.red);
+            //Debug.DrawRay(cam.transform.position, cam.transform.forward * 100.0f, Color.red);
             if(Physics.Raycast(cam.transform.position, cam.transform.forward * 100.0f, out _hit))
             {
                 if (_hit.transform.gameObject.CompareTag("_Enemy"))
@@ -318,6 +322,7 @@ public class PlayerCtrl : MonoBehaviour
                     _hit.transform.GetComponent<EnemyCtrl>().EnemyHit();
                 }
             }
+            audioSource.Play();
             isReload = true;
             StartCoroutine(Reload());
         }
@@ -383,6 +388,17 @@ public class PlayerCtrl : MonoBehaviour
     public void ChangeState(State s)
     {
         state = s;
+    }
+
+    // 플레이어 낙하 확인 함수
+    void PlayerFall()
+    {
+        Scene scene = SceneManager.GetActiveScene();
+        if(tr.position.y < 180 && scene.name != "DebugScene")
+        {
+            state = State.DIE;
+            GameManager.instance.SendMessage("OnPlayerDie");
+        }
     }
 
     void GamePause(object sender, EventArgs e)

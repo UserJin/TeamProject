@@ -140,7 +140,8 @@ public class GameManager : MonoBehaviour
     // 플레이어가 재시작 버튼을 누르면 실행
     public void RestartGame()
     {
-        SceneManager.LoadScene(0);
+        Scene scene = SceneManager.GetActiveScene();
+        SceneManager.LoadScene(scene.name);
         InitGame();
     }
 

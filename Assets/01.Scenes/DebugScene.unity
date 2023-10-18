@@ -2284,7 +2284,7 @@ PrefabInstance:
     - target: {fileID: 3756845020144002209, guid: 9e04b134d9efae34aa269a58afd6f3a9,
         type: 3}
       propertyPath: m_Name
-      value: Space_Soldier_A
+      value: Enemy
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
