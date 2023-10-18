@@ -34,7 +34,7 @@ public class EnemyCtrl : MonoBehaviour
     void Start()
     {
         player = GameObject.FindGameObjectWithTag("_Player");
-        hookPoint = gameObject.transform.GetChild(0).gameObject;
+        hookPoint = gameObject.transform.Find("EnemyHookPoint").gameObject;
         tr = gameObject.transform;
         hookPoint.SetActive(false);
         bulletPrefab = Resources.Load<GameObject>("Bullet/EnemyBullet");
@@ -64,7 +64,7 @@ public class EnemyCtrl : MonoBehaviour
             //추적모드일때
             if(state == State.TRACE)
             {
-                tr.LookAt(player.transform.position);
+                tr.LookAt(new Vector3(player.transform.position.x, 0, player.transform.position.z));
             }
         }   
     }
@@ -91,7 +91,7 @@ public class EnemyCtrl : MonoBehaviour
     //모자 날려버리기
     public void Force2Hat()
     {
-        GameObject hat = tr.Find("Hat").gameObject;
+        GameObject hat = tr.GetChild(0).Find("Hat_1").gameObject;
         if(hat != null)
         {
             hat.transform.SetParent(null);

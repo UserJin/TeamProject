@@ -13,7 +13,8 @@ public class FocusCtrl : MonoBehaviour
     public GameObject sliderFill;
     public Image fill;
 
-    CapsuleCollider p_cl;
+    CapsuleCollider p_cscl;
+    BoxCollider p_bxcl;
     Rigidbody p_rb;
     Transform p_tr;
 
@@ -48,7 +49,8 @@ public class FocusCtrl : MonoBehaviour
         player = GameObject.FindGameObjectWithTag("_Player");
         p_rb = player.GetComponent<Rigidbody>();
         p_tr = player.GetComponent<Transform>();
-        p_cl = player.GetComponent<CapsuleCollider>();
+        p_cscl = player.GetComponent<CapsuleCollider>();
+        p_bxcl = player.GetComponent<BoxCollider>();
 
         target = null;
         targetDistance = 100.0f;
@@ -150,7 +152,8 @@ public class FocusCtrl : MonoBehaviour
             // 타겟이 있을 때만 돌진
             if(target != null)
             {
-                p_cl.isTrigger = true; // 일시적으로 충돌판정 X
+                p_cscl.isTrigger = true; // 일시적으로 충돌판정 X
+                p_bxcl.isTrigger = true; // 일시적으로 충돌판정 X
                 target.GetComponent<HookPoint>().ChangeState();
                 Rush();
             }
@@ -196,7 +199,8 @@ public class FocusCtrl : MonoBehaviour
                 targetDistance = 100.0f;
                 state = State.IDLE;
                 player.GetComponent<PlayerCtrl>().ChangeState(PlayerCtrl.State.IDLE);
-                p_cl.isTrigger = false;
+                p_cscl.isTrigger = false;
+                p_bxcl.isTrigger = false;
             }
         }
     }
@@ -218,7 +222,8 @@ public class FocusCtrl : MonoBehaviour
                 targetDistance = 100.0f;
                 state = State.IDLE;
                 player.GetComponent<PlayerCtrl>().ChangeState(PlayerCtrl.State.IDLE);
-                p_cl.isTrigger = false;
+                p_cscl.isTrigger = false;
+                p_bxcl.isTrigger = false;
             }
         }
     }

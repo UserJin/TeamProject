@@ -297,14 +297,11 @@ public class PlayerCtrl : MonoBehaviour
         if(rb.velocity.y < 0)
         {
             RaycastHit hit;
-            if(Physics.Raycast(rb.position, Vector3.down, out hit, 1))
+            if(Physics.Raycast(rb.position, Vector3.down, out hit, 1.1f, groundLayer))
             {
-                if(hit.transform.gameObject.CompareTag("_Ground"))
-                {
-                    isJumping = false;
-                }
+                rb.velocity = Vector3.zero;
+                isJumping = false;
             }
-
         }
     }
 
