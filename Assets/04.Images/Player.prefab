@@ -152,6 +152,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mxTurnSpeed: 10
   myTurnSpeed: 10
+  player: {fileID: 5908378714738791989}
   isPause: 0
 --- !u!1 &5908378714738791989
 GameObject:
@@ -169,6 +170,7 @@ GameObject:
   - component: {fileID: 742492490843933616}
   - component: {fileID: 3343828815226579131}
   - component: {fileID: 3856546185227403545}
+  - component: {fileID: 5425152495770874944}
   m_Layer: 0
   m_Name: Player
   m_TagString: _Player
@@ -308,6 +310,11 @@ MonoBehaviour:
   jumpPower: 10
   dashPower: 10
   dashCoolTime: 3
+  maxVelocity: 1
+  wallCheckDistance: 1
+  wallRunForce: 0
+  wallJumpUpForce: 0
+  wallJumpSideForce: 0
   hp: 100
   maxHp: 100
   hpRecoveryAmountPerSec: 10
@@ -330,6 +337,7 @@ MonoBehaviour:
   focusBar: {fileID: 0}
   sliderFill: {fileID: 0}
   fill: {fileID: 0}
+  enemyRushPower: 0
   focusingGage: 0
   maxFocusingGage: 3
   targetDistance: 0
@@ -346,3 +354,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7b8435b8dcaf0514bb84548ce7e01edb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!65 &5425152495770874944
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5908378714738791989}
+  m_Material: {fileID: 13400000, guid: 0cca98542614b824299c612474bbe4ba, type: 2}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.9, y: 0.1, z: 0.9}
+  m_Center: {x: 0, y: -0.95, z: 0}

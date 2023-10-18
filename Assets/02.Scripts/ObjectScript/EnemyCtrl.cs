@@ -64,7 +64,8 @@ public class EnemyCtrl : MonoBehaviour
             //추적모드일때
             if(state == State.TRACE)
             {
-                tr.LookAt(new Vector3(player.transform.position.x, 0, player.transform.position.z));
+                //tr.LookAt(new Vector3(player.transform.position.x, 0, player.transform.position.z));
+                tr.LookAt(player.transform.position);
             }
         }   
     }
