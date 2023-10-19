@@ -19,7 +19,7 @@ public class EnemyCtrl : MonoBehaviour
     private GameObject firePoint;
     private float fireStartRate = 1.0f;
     private float fireRate = 1.0f;
-    private float bulletSpeed = 20.0f;
+    //private float bulletSpeed = 20.0f;
 
     // Enemy의 상태
     public enum State
@@ -39,7 +39,8 @@ public class EnemyCtrl : MonoBehaviour
         hookPoint = gameObject.transform.Find("EnemyHookPoint").gameObject;
         tr = gameObject.transform;
         hookPoint.SetActive(false);
-        bulletPrefab = Resources.Load<GameObject>("Bullet/EnemyBullet");
+        //bulletPrefab = Resources.Load<GameObject>("Bullet/EnemyBullet");
+        bulletPrefab = Resources.Load<GameObject>("Bullet/ammo_44_40");
         firePoint = tr.Find("FirePoint").gameObject;
         anim = GetComponent<Animator>();
     }
@@ -76,7 +77,9 @@ public class EnemyCtrl : MonoBehaviour
     public void Fire()
     {
         GameObject bullet = Instantiate(bulletPrefab, firePoint.transform);
-        bullet.GetComponent<Rigidbody>().velocity = (player.transform.position - tr.position).normalized * bulletSpeed;
+        bullet.transform.SetParent(null);
+        //bullet.transform.LookAt(new Vector3 (player.transform.position.x, player.transform.position.y, player.transform.position.z));
+        //bullet.GetComponent<Rigidbody>().velocity = (player.transform.position - tr.position).normalized * bulletSpeed;
     }
 
     // 적이 플레이어의 총에 피격 시 실행
