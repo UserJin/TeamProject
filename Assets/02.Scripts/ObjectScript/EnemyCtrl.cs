@@ -36,7 +36,7 @@ public class EnemyCtrl : MonoBehaviour
     void Start()
     {
         player = GameObject.FindGameObjectWithTag("_Player");
-        hookPoint = gameObject.transform.Find("EnemyHookPoint").gameObject;
+        hookPoint = gameObject.transform.GetChild(0).gameObject;
         tr = gameObject.transform;
         hookPoint.SetActive(false);
         //bulletPrefab = Resources.Load<GameObject>("Bullet/EnemyBullet");
@@ -68,7 +68,11 @@ public class EnemyCtrl : MonoBehaviour
             //추적모드일때
             if(state == State.TRACE)
             {
+<<<<<<< HEAD
+                tr.LookAt(player.transform.position);
+=======
                 tr.LookAt(new Vector3(player.transform.position.x, tr.position.y, player.transform.position.z));
+>>>>>>> 572ed9ec47107c274519872c3d487332d0fea0af
             }
         }   
     }
@@ -85,6 +89,12 @@ public class EnemyCtrl : MonoBehaviour
     // 적이 플레이어의 총에 피격 시 실행
     public void EnemyHit()
     {
+<<<<<<< HEAD
+        state = State.HIT;
+        Force2Hat();
+        hookPoint.SetActive(true);
+        CancelInvoke("Fire");
+=======
         if(state != State.DIE && state != State.HIT)
         {
             state = State.HIT;
@@ -93,12 +103,13 @@ public class EnemyCtrl : MonoBehaviour
             hookPoint.SetActive(true);
             CancelInvoke("Fire");
         }
+>>>>>>> 572ed9ec47107c274519872c3d487332d0fea0af
     }
 
     //모자 날려버리기
     public void Force2Hat()
     {
-        GameObject hat = tr.GetChild(0).Find("Hat_1").gameObject;
+        GameObject hat = tr.Find("Hat").gameObject;
         if(hat != null)
         {
             hat.transform.SetParent(null);
@@ -125,4 +136,3 @@ public class EnemyCtrl : MonoBehaviour
         Destroy(exp, 1f);
     }
 }
-
