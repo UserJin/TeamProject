@@ -30,6 +30,8 @@ public class GameManager : MonoBehaviour
     // 게임 클리어 및 패배 시 표시하는 UI 오브젝트
     public GameObject _gameoverPannel;
     public GameObject _gameClearPannel;
+
+    public AudioSource audioSource;
     
     public enum State
     {
@@ -59,6 +61,8 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         InitGame();
+        audioSource = GetComponent<AudioSource>();
+        audioSource.Play();
     }
 
     // Update is called once per frame

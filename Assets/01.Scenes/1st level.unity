@@ -8549,6 +8549,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 281932664048688519, guid: c0b2ee46224a9ec4387ae1f5ea5917e3,
+        type: 3}
+      propertyPath: m_PlayOnAwake
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1721544593406579655, guid: c0b2ee46224a9ec4387ae1f5ea5917e3,
         type: 3}
       propertyPath: m_Name

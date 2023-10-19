@@ -399,6 +399,11 @@ public class PlayerCtrl : MonoBehaviour
             state = State.DIE;
             GameManager.instance.SendMessage("OnPlayerDie");
         }
+        if(Input.GetKey(KeyCode.R))
+        {
+            state = State.DIE;
+            GameManager.instance.SendMessage("OnPlayerDie");
+        }
     }
 
     void GamePause(object sender, EventArgs e)

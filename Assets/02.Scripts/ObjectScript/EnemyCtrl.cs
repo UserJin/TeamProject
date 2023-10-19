@@ -11,6 +11,7 @@ public class EnemyCtrl : MonoBehaviour
     private GameObject player;
     private GameObject hookPoint;
     public GameObject expEffect;
+    public Animator anim;
 
     private Transform tr;
 
@@ -40,6 +41,7 @@ public class EnemyCtrl : MonoBehaviour
         hookPoint.SetActive(false);
         bulletPrefab = Resources.Load<GameObject>("Bullet/EnemyBullet");
         firePoint = tr.Find("FirePoint").gameObject;
+        anim = GetComponent<Animator>();
     }
 
     // Update is called once per frame
@@ -65,8 +67,7 @@ public class EnemyCtrl : MonoBehaviour
             //추적모드일때
             if(state == State.TRACE)
             {
-                //tr.LookAt(new Vector3(player.transform.position.x, 0, player.transform.position.z));
-                tr.LookAt(player.transform.position);
+                tr.LookAt(new Vector3(player.transform.position.x, tr.position.y, player.transform.position.z));
             }
         }   
     }
@@ -84,6 +85,7 @@ public class EnemyCtrl : MonoBehaviour
         if(state != State.DIE && state != State.HIT)
         {
             state = State.HIT;
+            anim.SetBool("Dead", true);
             Force2Hat();
             hookPoint.SetActive(true);
             CancelInvoke("Fire");
@@ -100,6 +102,7 @@ public class EnemyCtrl : MonoBehaviour
             hat.GetComponent<Rigidbody>().useGravity = true;
             hat.GetComponent<Rigidbody>().isKinematic = false;
             hat.GetComponent<Rigidbody>().AddForce((tr.position - player.transform.position).normalized * 5.0f + Vector3.up, ForceMode.Impulse);
+            hat.GetComponent<BoxCollider>().enabled = true;
         }
     }
 
