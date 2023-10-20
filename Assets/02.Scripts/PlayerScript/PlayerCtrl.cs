@@ -200,9 +200,9 @@ public class PlayerCtrl : MonoBehaviour
         float f = 1.0f;
         while(f >= -1.0)
         {
-            if (isWallLeft = Physics.Raycast(tr.position, cam.transform.forward * f + cam.transform.right * -1f, out leftWall, wallCheckDistance, wallLayer))
+            if (isWallLeft = Physics.Raycast(tr.position, (cam.transform.forward * f + cam.transform.right * -1f).normalized, out leftWall, wallCheckDistance, wallLayer))
                 break;
-            else if (isWallRight = Physics.Raycast(tr.position, cam.transform.forward * f + cam.transform.right, out rightWall, wallCheckDistance, wallLayer))
+            else if (isWallRight = Physics.Raycast(tr.position, (cam.transform.forward * f + cam.transform.right).normalized, out rightWall, wallCheckDistance, wallLayer))
                 break;
             f -= 0.1f;
         } 
