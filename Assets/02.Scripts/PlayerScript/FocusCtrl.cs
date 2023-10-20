@@ -19,9 +19,8 @@ public class FocusCtrl : MonoBehaviour
     Transform p_tr;
 
     private float rushPower; // 돌진에 적용되는 힘
-    private float detectionRange; // 조준상태에서 갈고리 포인트 탐지 범위
     private float focusingRange; // 화면중 일부 범위내의 갈고리만 탐지되도록 하는 값
-
+    public float detectionRange; // 조준상태에서 갈고리 포인트 탐지 범위
     public float enemyRushPower;
 
     public float focusingGage; // 집중 게이지, 초당 1회복
@@ -29,6 +28,7 @@ public class FocusCtrl : MonoBehaviour
 
     [SerializeField]
     private float targetDistance;
+
 
 
     public enum State
@@ -55,7 +55,7 @@ public class FocusCtrl : MonoBehaviour
         target = null;
         targetDistance = 100.0f;
 
-        detectionRange = 12.0f;
+        detectionRange = 30.0f;
         focusingRange = 0.25f;
         rushPower = 100.0f;
         focusingGage = 0.0f;
