@@ -136,3 +136,4 @@ public class EnemyCtrl : MonoBehaviour
         Destroy(exp, 1f);
     }
 }
+

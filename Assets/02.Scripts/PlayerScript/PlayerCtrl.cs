@@ -12,8 +12,8 @@ public class PlayerCtrl : MonoBehaviour
     // 멤버 변수 목록
     // 체력, 속도
     // 디버깅하기 쉽게 public으로 선언, 이후에 private로 변경 필요
-    public float moveSpeed = 10.0f;
-    public float jumpPower = 10.0f;
+    public float moveSpeed = 13.0f;
+    public float jumpPower = 20.0f;
     public float dashPower = 1.0f;
     public float dashCoolTime = 2.0f; // 대쉬 사용가능 쿨타임
     public float maxVelocity = 5.0f;
@@ -39,7 +39,7 @@ public class PlayerCtrl : MonoBehaviour
     float reloadCoolTime; // 사격 쿨타임
 
     [SerializeField]
-    private float grav = -0.1f; // 플레이어에게 추가로 적용되는 중력
+    private float grav = -0.7f; // 플레이어에게 추가로 적용되는 중력
 
     private bool isJumping; // 현재 점프 여부
     private bool dashAvailable; // 대쉬 사용 가능 여부
@@ -114,11 +114,12 @@ public class PlayerCtrl : MonoBehaviour
 
     void InitPlayer()
     {
-        moveSpeed = 10.0f;
-        jumpPower = 10.0f;
-        dashPower = 10.0f;
+        moveSpeed = 8.0f;
+        jumpPower = 20.0f;
+        dashPower = 20.0f;
         h = 0.0f;
         v = 0.0f;
+        grav = -0.7f;
         hp = maxHp;
         hpRecoveryAmountPerSec = 10.0f;
         recoveryCoolTime = 5.0f;
@@ -131,10 +132,10 @@ public class PlayerCtrl : MonoBehaviour
         recoveryCoroutine = RecoveryCoolTime();
         groundLayer = 1 << LayerMask.NameToLayer("GROUND");
         wallLayer = 1 << LayerMask.NameToLayer("WALL");
-        wallRunForce = 20.0f;
-        wallJumpUpForce = 5.0f;
-        wallJumpSideForce = 7.0f;
-        maxVelocity = 15.0f;
+        wallRunForce = 500.0f;
+        wallJumpUpForce = 20.0f;
+        wallJumpSideForce = 1.0f;
+        maxVelocity = 10.0f;
 
         tr = GetComponent<Transform>();
         rb = GetComponent<Rigidbody>();
@@ -210,7 +211,7 @@ public class PlayerCtrl : MonoBehaviour
     // 캐릭터 벽타기 상태 변환 함수
     void WallRun()
     {
-        if((isWallLeft || isWallRight) && v > 0 && GroundCheck())
+        if((isWallLeft || isWallRight) && v > 0 /*&& GroundCheck()*/)
         {
             if(Input.GetKey(KeyCode.Space))
             {
@@ -219,7 +220,7 @@ public class PlayerCtrl : MonoBehaviour
                     state = State.WALLRUN;
                 }
             }
-            else if(Input.GetKeyUp(KeyCode.Space))
+            if(Input.GetKeyUp(KeyCode.Space))
             {
                 rb.useGravity = true;
                 state = State.IDLE;
