@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -82,6 +83,12 @@ public class FocusCtrl : MonoBehaviour
             {
                 RushToTarget();
             }
+            else if(state == State.EXHAUST && target != null)
+            {
+                target.GetComponent<HookPoint>().state = HookPoint.State.ONABLE;
+                target = null;
+                targetDistance = 100.0f;
+            }
             //else if (state == State.RUSHTOENEMY)
             //{
             //    RushToEnemy();
@@ -90,6 +97,7 @@ public class FocusCtrl : MonoBehaviour
             {
                 RecoveryFocusingGage();
             }
+
         }
     }
 
@@ -112,6 +120,8 @@ public class FocusCtrl : MonoBehaviour
         foreach (GameObject point in enemyHookPoints) points[idx++] = point;
         // 갈고리 포인트 + 적 갈고리 포인트 목록
 
+        //이전 타겟이 아직도 조건을 충족시키는지 확인
+        CheckTargetState();
         if (points != null)
         {
             foreach(GameObject point in points)
@@ -132,7 +142,9 @@ public class FocusCtrl : MonoBehaviour
                         Vector2 tmp = new Vector2(0.5f, 0.5f) - screenPoint2D; // 중앙 값과 차이만 낢김
                         if (tmp.magnitude < targetDistance && screenPoint.z >= 0) // 기존 타겟의 거리보다 가까우면 변경
                         {
+                            if (target != null) target.GetComponent<HookPoint>().state = HookPoint.State.ONABLE;
                             target = point;
+                            target.GetComponent<HookPoint>().state = HookPoint.State.TARGETED;
                             targetDistance = tmp.magnitude;
                         }
                     }
@@ -246,6 +258,7 @@ public class FocusCtrl : MonoBehaviour
             }
             else
             {
+                target.GetComponent<HookPoint>().state = HookPoint.State.ONABLE;
                 target = null;
                 targetDistance = 100.0f;
             }
@@ -262,7 +275,7 @@ public class FocusCtrl : MonoBehaviour
             GameManager.instance.DisableSlowMode();
             state = State.EXHAUST;
             focusingGage = 0;
-            if(fill != null)
+            if (fill != null)
             {
                 fill.color = Color.red;
             }

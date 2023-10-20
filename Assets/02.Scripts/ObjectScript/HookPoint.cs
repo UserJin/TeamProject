@@ -7,7 +7,8 @@ public class HookPoint : MonoBehaviour
     public enum State
     {
         DISABLE,
-        ONABLE
+        ONABLE,
+        TARGETED
     }
 
     public State state;
@@ -29,6 +30,10 @@ public class HookPoint : MonoBehaviour
         if(state == State.ONABLE)
         {
             gameObject.GetComponent<Renderer>().material.color = Color.green;
+        }
+        else if(state == State.TARGETED)
+        {
+            gameObject.GetComponent<Renderer>().material.color = Color.blue;
         }
         else
         {
