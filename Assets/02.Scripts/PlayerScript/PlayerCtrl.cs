@@ -197,8 +197,15 @@ public class PlayerCtrl : MonoBehaviour
     {
         Debug.DrawRay(tr.position, cam.transform.right * -1f, Color.red);
         Debug.DrawRay(tr.position, cam.transform.right * 1f, Color.red);
-        isWallLeft = Physics.Raycast(tr.position, cam.transform.right * -1f, out leftWall, wallCheckDistance, wallLayer);
-        isWallRight = Physics.Raycast(tr.position, cam.transform.right, out rightWall, wallCheckDistance, wallLayer);
+        float f = 1.0f;
+        while(f >= -1.0)
+        {
+            if (isWallLeft = Physics.Raycast(tr.position, cam.transform.forward * f + cam.transform.right * -1f, out leftWall, wallCheckDistance, wallLayer))
+                break;
+            else if (isWallRight = Physics.Raycast(tr.position, cam.transform.forward * f + cam.transform.right, out rightWall, wallCheckDistance, wallLayer))
+                break;
+            f -= 0.1f;
+        } 
     }
 
     // 캐릭터가 공중에 있는지 확인하는 함수
