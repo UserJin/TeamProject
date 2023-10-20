@@ -56,12 +56,12 @@ public class FocusCtrl : MonoBehaviour
         target = null;
         targetDistance = 100.0f;
 
-        detectionRange = 12.0f;
+        detectionRange = 36.0f;
         focusingRange = 0.25f;
         rushPower = 100.0f;
         focusingGage = 0.0f;
         maxFocusingGage = 3.0f;
-        enemyRushPower = 15.0f;
+        enemyRushPower = 10.0f;
         focusingGage = maxFocusingGage;
         state = State.IDLE;
 
@@ -97,7 +97,20 @@ public class FocusCtrl : MonoBehaviour
             {
                 RecoveryFocusingGage();
             }
+            if(state == State.FOCUS)
+            {
+                cam.fieldOfView = (Mathf.Lerp(cam.fieldOfView, 40f, (float)(5/(cam.fieldOfView-40))));//줌인 서서히 하기. 최대에서 최소가는데 0.5초
+            }
+            else if(state == State.RUSH || state == State.RUSHTOENEMY)
+            {
+                cam.fieldOfView = (Mathf.Lerp(cam.fieldOfView, 120f, (float)(0.3/(120-cam.fieldOfView))));//줌아웃 빠르게 하기. 최소에서 최대가는데 0.05초
 
+            }
+            else if(state == State.IDLE)
+            {
+            cam.fieldOfView = (Mathf.Lerp(cam.fieldOfView, 80f, (float)(0.25)));//줌아웃 빠르게 하기. 최소에서 최대가는데 0.05초
+
+            }
         }
     }
 
@@ -162,6 +175,7 @@ public class FocusCtrl : MonoBehaviour
         {
             state = State.FOCUS;
             GameManager.instance.EnableSlowMode();
+
         }
         // 마우스 오른쪽을 떼면 집중 상태해제
         else if (Input.GetMouseButtonUp(1) && state == State.FOCUS)
@@ -174,6 +188,7 @@ public class FocusCtrl : MonoBehaviour
                 p_bxcl.isTrigger = true; // 일시적으로 충돌판정 X
                 target.GetComponent<HookPoint>().ChangeState();
                 Rush();
+
             }
             else
             {
@@ -192,7 +207,9 @@ public class FocusCtrl : MonoBehaviour
             if(target.CompareTag("_HookPoint"))
             {
                 state = State.RUSH;
-                Vector3 dir = target.transform.position - player.transform.position;
+                Vector3 destPos = target.transform.position;
+                destPos.y += 5;
+                Vector3 dir = destPos - player.transform.position;
                 p_rb.velocity = Vector3.zero;
                 p_rb.AddForce(dir * rushPower);
             }
@@ -209,8 +226,11 @@ public class FocusCtrl : MonoBehaviour
     {
         if(target != null && state == State.RUSH)
         {
-            float _dist = Vector3.Distance(p_tr.position, target.transform.position);
-            if(_dist <= 1.5f)
+            Vector3 destPos = target.transform.position;
+            destPos.y += 5;
+            destPos = destPos + target.transform.forward * 3;
+            float _dist = Vector3.Distance(p_tr.position, destPos);
+            if(_dist <= 3f)
             {
                 player.GetComponent<Rigidbody>().velocity = player.GetComponent<Rigidbody>().velocity * 0.01f;
                 target = null;
@@ -219,6 +239,7 @@ public class FocusCtrl : MonoBehaviour
                 player.GetComponent<PlayerCtrl>().ChangeState(PlayerCtrl.State.IDLE);
                 p_cscl.isTrigger = false;
                 p_bxcl.isTrigger = false;
+                
             }
         }
     }
@@ -227,14 +248,17 @@ public class FocusCtrl : MonoBehaviour
     {
         if (target != null && state == State.RUSHTOENEMY)
         {
+            Vector3 destPos = target.transform.position;
+            destPos.y += 1;
+            destPos = destPos + target.transform.forward * 5;
             p_tr.position = Vector3.Lerp(p_tr.position, target.transform.position, Time.deltaTime * enemyRushPower);
             float _dist = Vector3.Distance(p_tr.position, target.transform.position);
-            if (_dist <= 1.5f)
+            if (_dist <= 3f)
             {
                 player.GetComponent<Rigidbody>().velocity = Vector3.zero;
                 target.GetComponentInParent<EnemyCtrl>().SendMessage("EnemyDie"); // 적 처치 메시지 보내기
                 player.GetComponent<PlayerCtrl>().ChangeJumpState(true); // 플레이어의 점프 여부를 참으로 변경
-                p_rb.AddForce(Vector3.up * 15.0f, ForceMode.Impulse);
+                p_rb.AddForce(Vector3.up * 20.0f, ForceMode.Impulse);
                 p_rb.useGravity = true;
                 target = null;
                 targetDistance = 100.0f;
@@ -242,6 +266,7 @@ public class FocusCtrl : MonoBehaviour
                 player.GetComponent<PlayerCtrl>().ChangeState(PlayerCtrl.State.IDLE);
                 p_cscl.isTrigger = false;
                 p_bxcl.isTrigger = false;
+                
             }
         }
     }

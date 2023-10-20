@@ -39,7 +39,7 @@ public class PlayerCtrl : MonoBehaviour
     float reloadCoolTime; // 사격 쿨타임
 
     [SerializeField]
-    private float grav = -0.1f; // 플레이어에게 추가로 적용되는 중력
+    private float grav = -0.7f; // 플레이어에게 추가로 적용되는 중력
 
     private bool isJumping; // 현재 점프 여부
     private bool dashAvailable; // 대쉬 사용 가능 여부
@@ -114,9 +114,10 @@ public class PlayerCtrl : MonoBehaviour
 
     void InitPlayer()
     {
-        moveSpeed = 10.0f;
-        jumpPower = 10.0f;
-        dashPower = 10.0f;
+        moveSpeed = 9.0f;
+        jumpPower = 20.0f;
+        dashPower = 20.0f;
+        grav = -0.7f;
         h = 0.0f;
         v = 0.0f;
         hp = maxHp;
@@ -131,10 +132,10 @@ public class PlayerCtrl : MonoBehaviour
         recoveryCoroutine = RecoveryCoolTime();
         groundLayer = 1 << LayerMask.NameToLayer("GROUND");
         wallLayer = 1 << LayerMask.NameToLayer("WALL");
-        wallRunForce = 20.0f;
-        wallJumpUpForce = 5.0f;
-        wallJumpSideForce = 7.0f;
-        maxVelocity = 15.0f;
+        wallRunForce = 500.0f;
+        wallJumpUpForce = 15.0f;
+        wallJumpSideForce = 3.0f;
+        maxVelocity = 10.0f;
 
         tr = GetComponent<Transform>();
         rb = GetComponent<Rigidbody>();

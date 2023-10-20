@@ -12,11 +12,14 @@ public class HookPoint : MonoBehaviour
     }
 
     public State state;
+    private GameObject player;
 
     // Start is called before the first frame update
     void Start()
     {
         state = State.ONABLE;
+        player = GameObject.FindGameObjectWithTag("_Player");
+
     }
 
     // Update is called once per frame
@@ -34,6 +37,7 @@ public class HookPoint : MonoBehaviour
         else if(state == State.TARGETED)
         {
             gameObject.GetComponent<Renderer>().material.color = Color.blue;
+            transform.LookAt(player.transform.position);
         }
         else
         {
