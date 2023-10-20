@@ -60,7 +60,7 @@ public class FocusCtrl : MonoBehaviour
         rushPower = 100.0f;
         focusingGage = 0.0f;
         maxFocusingGage = 3.0f;
-        enemyRushPower = 10.0f;
+        enemyRushPower = 5.0f;
         focusingGage = maxFocusingGage;
         state = State.IDLE;
 
@@ -211,7 +211,7 @@ public class FocusCtrl : MonoBehaviour
         {
             p_tr.position = Vector3.Lerp(p_tr.position, target.transform.position, Time.deltaTime * enemyRushPower);
             float _dist = Vector3.Distance(p_tr.position, target.transform.position);
-            if (_dist <= 1.0f)
+            if (_dist <= 1.5f)
             {
                 player.GetComponent<Rigidbody>().velocity = Vector3.zero;
                 target.GetComponentInParent<EnemyCtrl>().SendMessage("EnemyDie"); // 적 처치 메시지 보내기

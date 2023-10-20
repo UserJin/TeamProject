@@ -195,8 +195,10 @@ public class PlayerCtrl : MonoBehaviour
     // 캐릭터의 옆에 벽이 있는지 확인하는 함수
     void Wallcheck()
     {
-        isWallLeft = Physics.Raycast(tr.position, cam.transform.right * -1, out leftWall, wallCheckDistance, wallLayer);
-        isWallRight = Physics.Raycast(tr.position, cam.transform.right, out rightWall, wallCheckDistance, wallLayer);
+        Debug.DrawRay(tr.position, cam.transform.right * -1.2f, Color.red);
+        Debug.DrawRay(tr.position, cam.transform.right * 1.2f, Color.red);
+        isWallLeft = Physics.Raycast(tr.position, cam.transform.right * -1.2f, out leftWall, wallCheckDistance, wallLayer);
+        isWallRight = Physics.Raycast(tr.position, cam.transform.right * 1.2f, out rightWall, wallCheckDistance, wallLayer);
     }
 
     // 캐릭터가 공중에 있는지 확인하는 함수

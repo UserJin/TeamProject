@@ -62,6 +62,7 @@ public class GameManager : MonoBehaviour
     {
         InitGame();
         audioSource = GetComponent<AudioSource>();
+        audioSource.loop = true;
         audioSource.Play();
     }
 
