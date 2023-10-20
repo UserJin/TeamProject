@@ -240,7 +240,7 @@ public class PlayerCtrl : MonoBehaviour
     void WallRunMovement()
     {
         rb.useGravity = false;
-        //rb.velocity = new Vector3(rb.velocity.x, 0, rb.velocity.z);
+        rb.velocity = new Vector3(rb.velocity.x, 0, rb.velocity.z);
         LimitVelocity();
         //Debug.Log(rb.velocity);
 
@@ -269,7 +269,7 @@ public class PlayerCtrl : MonoBehaviour
     // 캐릭터 속도 제한 함수
     void LimitVelocity()
     {
-        if(rb.velocity.magnitude > maxVelocity)
+        if (rb.velocity.magnitude > maxVelocity)
         {
             rb.velocity = rb.velocity.normalized * maxVelocity;
         }
