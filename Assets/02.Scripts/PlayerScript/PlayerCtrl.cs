@@ -269,17 +269,10 @@ public class PlayerCtrl : MonoBehaviour
     // 캐릭터 속도 제한 함수
     void LimitVelocity()
     {
-        float _velocity_x = rb.velocity.x;
-        float _velocity_z = rb.velocity.z;
-        if(_velocity_x > 0)
-            _velocity_x = (_velocity_x < maxVelocity) ? _velocity_x : maxVelocity;
-        else if(_velocity_x < 0)
-            _velocity_x = (_velocity_x > -maxVelocity) ? _velocity_x : -maxVelocity;
-        if (_velocity_z > 0)
-            _velocity_z = (_velocity_z < maxVelocity) ? _velocity_z : maxVelocity;
-        else if (_velocity_z < 0)
-            _velocity_z = (_velocity_z > -maxVelocity) ? _velocity_z : -maxVelocity;
-        rb.velocity = new Vector3(_velocity_x, 0f, _velocity_z);
+        if(rb.velocity.magnitude > maxVelocity)
+        {
+            rb.velocity = rb.velocity.normalized * maxVelocity;
+        }
     }
 
     // 카메라의 방향과 플레이어의 방향 동기화 함수 - 일단 비활성화
