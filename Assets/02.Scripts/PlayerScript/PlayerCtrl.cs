@@ -242,7 +242,7 @@ public class PlayerCtrl : MonoBehaviour
     {
         rb.useGravity = false;
         //rb.velocity = new Vector3(rb.velocity.x, 0, rb.velocity.z);
-        LimitVelocity();
+       // LimitVelocity();
         //Debug.Log(rb.velocity);
 
         Vector3 wallNormal = isWallRight ? rightWall.normal : leftWall.normal;
