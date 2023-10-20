@@ -36,7 +36,7 @@ public class EnemyCtrl : MonoBehaviour
     void Start()
     {
         player = GameObject.FindGameObjectWithTag("_Player");
-        hookPoint = gameObject.transform.Find("EnemyHookPoint").gameObject;
+        hookPoint = gameObject.transform.GetChild(0).Find("EnemyHookPoint").gameObject;
         tr = gameObject.transform;
         hookPoint.SetActive(false);
         //bulletPrefab = Resources.Load<GameObject>("Bullet/EnemyBullet");

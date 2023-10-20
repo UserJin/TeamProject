@@ -1,4 +1,4 @@
-﻿/*
+/*
                ███████╗░█████╗░██████╗░░█████╗░███████╗  ███████╗██╗███████╗██╗░░░░░██████╗░
                ██╔════╝██╔══██╗██╔══██╗██╔══██╗██╔════╝  ██╔════╝██║██╔════╝██║░░░░░██╔══██╗
                █████╗░░██║░░██║██████╔╝██║░░╚═╝█████╗░░  █████╗░░██║█████╗░░██║░░░░░██║░░██║
@@ -43,7 +43,7 @@ Shader "Ultimate 10+ Shaders/Force Field"
         _MainTex ("Texture", 2D) = "white" {}
         [HDR] _Color ("Color", Color) = (1,1,1,1)
 
-        _FresnelPower("Fresnel Power", Range(0, 10)) = 3
+        _FresnelPower("Fresnel Power", Range(0, 100)) = 10
         _ScrollDirection ("Scroll Direction", float) = (0, 0, 0, 0)
     }
     SubShader
@@ -53,8 +53,14 @@ Shader "Ultimate 10+ Shaders/Force Field"
         LOD 100
         Cull Back
         Lighting Off
-        ZWrite On
-
+        ZWrite OFF
+        
+        Stencil 
+        {
+        Ref 30
+        Comp always
+        Pass replace
+        }
         Pass
         {
             CGPROGRAM
@@ -107,7 +113,7 @@ Shader "Ultimate 10+ Shaders/Force Field"
                 output.uv = TRANSFORM_TEX(vert.uv, _MainTex);
 
                 viewDir = normalize(ObjSpaceViewDir(vert.vertex));
-                output.rim = 1.0 - saturate(dot(viewDir, vert.normal));
+                output.rim = 1 - saturate(dot(viewDir, vert.normal));
 
                 output.uv += _ScrollDirection * _Time.y;
 
@@ -118,8 +124,8 @@ Shader "Ultimate 10+ Shaders/Force Field"
             fixed4 frag (v2f input) : SV_Target
             {
                 pixel = tex2D(_MainTex, input.uv) * _Color * pow(_FresnelPower, input.rim);
-                pixel = lerp(0, pixel, input.rim);
-                
+                pixel = lerp(2, pixel-5, input.rim);
+
                 return clamp(pixel, 0, _Color);
             }
             ENDCG
