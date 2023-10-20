@@ -99,7 +99,7 @@ public class FocusCtrl : MonoBehaviour
             }
             if(state == State.FOCUS)
             {
-                cam.fieldOfView = (Mathf.Lerp(cam.fieldOfView, 40f, (float)(5/(cam.fieldOfView-40))));//줌인 서서히 하기. 최대에서 최소가는데 0.5초
+                cam.fieldOfView = (Mathf.Lerp(cam.fieldOfView, 30f, (float)(5/(cam.fieldOfView-30))));//줌인 서서히 하기. 최대에서 최소가는데 0.5초
             }
             else if(state == State.RUSH || state == State.RUSHTOENEMY)
             {
@@ -108,7 +108,7 @@ public class FocusCtrl : MonoBehaviour
             }
             else if(state == State.IDLE)
             {
-            cam.fieldOfView = (Mathf.Lerp(cam.fieldOfView, 80f, (float)(0.25)));//줌아웃 빠르게 하기. 최소에서 최대가는데 0.05초
+            cam.fieldOfView = (Mathf.Lerp(cam.fieldOfView, 70f, (float)(0.25)));//줌아웃 빠르게 하기. 최소에서 최대가는데 0.05초
 
             }
         }
@@ -209,6 +209,7 @@ public class FocusCtrl : MonoBehaviour
                 state = State.RUSH;
                 Vector3 destPos = target.transform.position;
                 destPos.y += 5;
+                destPos = destPos + target.transform.forward * 2;
                 Vector3 dir = destPos - player.transform.position;
                 p_rb.velocity = Vector3.zero;
                 p_rb.AddForce(dir * rushPower);
@@ -228,7 +229,7 @@ public class FocusCtrl : MonoBehaviour
         {
             Vector3 destPos = target.transform.position;
             destPos.y += 5;
-            destPos = destPos + target.transform.forward * 3;
+            destPos = destPos + target.transform.forward * 2;
             float _dist = Vector3.Distance(p_tr.position, destPos);
             if(_dist <= 3f)
             {

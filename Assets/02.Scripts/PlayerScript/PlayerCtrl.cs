@@ -133,8 +133,8 @@ public class PlayerCtrl : MonoBehaviour
         groundLayer = 1 << LayerMask.NameToLayer("GROUND");
         wallLayer = 1 << LayerMask.NameToLayer("WALL");
         wallRunForce = 500.0f;
-        wallJumpUpForce = 15.0f;
-        wallJumpSideForce = 3.0f;
+        wallJumpUpForce = 20.0f;
+        wallJumpSideForce = 2.0f;
         maxVelocity = 10.0f;
 
         tr = GetComponent<Transform>();
