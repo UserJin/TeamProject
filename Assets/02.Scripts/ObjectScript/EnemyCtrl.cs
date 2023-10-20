@@ -99,7 +99,7 @@ public class EnemyCtrl : MonoBehaviour
     public void Force2Hat()
     {
         GameObject hat = tr.GetChild(0).Find("Hat_1").gameObject;
-        if(hat != null)
+        if (hat != null)
         {
             hat.transform.SetParent(null);
             hat.GetComponent<Rigidbody>().useGravity = true;
@@ -125,3 +125,4 @@ public class EnemyCtrl : MonoBehaviour
         Destroy(exp, 1f);
     }
 }
+
