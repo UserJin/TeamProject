@@ -117,9 +117,15 @@ public class FocusCtrl : MonoBehaviour
             foreach(GameObject point in points)
             {
                 HookPoint.State _state = point.GetComponent<HookPoint>().GetState(); // 갈고리 포인트 상태
-                if(Vector3.Distance(this.transform.position, point.transform.position) < detectionRange && _state == HookPoint.State.ONABLE) // 일정 범위 이내 + 갈고리 사용 가능 상태
+
+                RaycastHit hit;
+                Physics.Raycast(point.transform.position, cam.transform.position - point.transform.position, out hit);
+                if (hit.transform.gameObject == null || !hit.transform.gameObject.CompareTag("_Player")) continue;
+
+                if (Vector3.Distance(this.transform.position, point.transform.position) < detectionRange && _state == HookPoint.State.ONABLE) // 일정 범위 이내 + 갈고리 사용 가능 상태
                 {
                     Vector3 screenPoint = cam.WorldToViewportPoint(point.transform.position); // 해당 갈고리 화면상 위치
+                    
                     if(screenPoint.x > focusingRange && screenPoint.x < 1-focusingRange && screenPoint.y > focusingRange && screenPoint.y < 1 - focusingRange) // 일정 범위 이내라면
                     {
                         Vector2 screenPoint2D = screenPoint; // 2D 좌표로 변경
