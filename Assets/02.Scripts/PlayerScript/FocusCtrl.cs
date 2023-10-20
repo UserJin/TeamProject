@@ -7,7 +7,7 @@ public class FocusCtrl : MonoBehaviour
 {
     Camera cam;
 
-    GameObject target;
+    [SerializeField] GameObject target;
     GameObject player;
     public Slider focusBar;
     public GameObject sliderFill;
@@ -60,7 +60,7 @@ public class FocusCtrl : MonoBehaviour
         rushPower = 100.0f;
         focusingGage = 0.0f;
         maxFocusingGage = 3.0f;
-        enemyRushPower = 5.0f;
+        enemyRushPower = 15.0f;
         focusingGage = maxFocusingGage;
         state = State.IDLE;
 
@@ -82,11 +82,11 @@ public class FocusCtrl : MonoBehaviour
             {
                 RushToTarget();
             }
-            //else if(state == State.RUSHTOENEMY)
+            //else if (state == State.RUSHTOENEMY)
             //{
             //    RushToEnemy();
             //}
-            if(focusingGage < maxFocusingGage && state != State.FOCUS)
+            if (focusingGage < maxFocusingGage && state != State.FOCUS)
             {
                 RecoveryFocusingGage();
             }
@@ -216,8 +216,8 @@ public class FocusCtrl : MonoBehaviour
                 player.GetComponent<Rigidbody>().velocity = Vector3.zero;
                 target.GetComponentInParent<EnemyCtrl>().SendMessage("EnemyDie"); // 적 처치 메시지 보내기
                 player.GetComponent<PlayerCtrl>().ChangeJumpState(true); // 플레이어의 점프 여부를 참으로 변경
+                p_rb.AddForce(Vector3.up * 15.0f, ForceMode.Impulse);
                 p_rb.useGravity = true;
-                p_rb.AddForce(Vector3.up * 10.0f, ForceMode.Impulse);
                 target = null;
                 targetDistance = 100.0f;
                 state = State.IDLE;
