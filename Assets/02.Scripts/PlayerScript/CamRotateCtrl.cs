@@ -22,7 +22,7 @@ public class CamRotateCtrl : MonoBehaviour
         mxTurnSpeed = 400.0f;
         myTurnSpeed = 400.0f;
         isPause = false;
-        GameManager.instance.OnGamePause += ChangePause;
+        GameManager.instance.OnGamePause += PauseRotate;
     }
 
     // Update is called once per frame
@@ -56,8 +56,8 @@ public class CamRotateCtrl : MonoBehaviour
         transform.eulerAngles = new Vector3(-my, mx, 0);
     }
 
-    void ChangePause(object sender, EventArgs e)
+    void PauseRotate(object sender, EventArgs e)
     {
-        isPause = !isPause;
+        isPause = true;
     }
 }
