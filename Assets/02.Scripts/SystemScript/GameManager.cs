@@ -138,7 +138,8 @@ public class GameManager : MonoBehaviour
         _gameClearPannel.SetActive(true);
         _gameClearPannel.transform.Find("Score").GetComponent<TMP_Text>().text = $"Score: {scoreManager.Score}";
         _gameClearPannel.transform.Find("MaxCombo").GetComponent<TMP_Text>().text = $"Max combo: {ComboManager.instance.maxCombo}";
-        _gameClearPannel.transform.Find("Rank").GetComponent<TMP_Text>().text = $"Rank: {scoreManager.CheckRank()}";
+        //_gameClearPannel.transform.Find("Rank").GetComponent<TMP_Text>().text = $"Rank: {scoreManager.CheckRank()}";
+        _gameClearPannel.transform.Find("Rank").GetComponent<TMP_Text>().text = ""; // 현재는 점수에 따른 랭크 책정X 이기 때문에 일단 비활성화
         SetUI(false);
         Time.timeScale = 0.0f;
     }
