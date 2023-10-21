@@ -53,7 +53,12 @@ public class PlayerCtrl : MonoBehaviour
     private Rigidbody rb;
 
     public Slider hpBar;
+
     public AudioSource audioSource;
+
+    public AudioClip audioFire;
+    public AudioClip audioWallJump;
+    public AudioClip audioRush;
 
     IEnumerator recoveryCoroutine; // 자동 회복 코루틴
 
@@ -272,6 +277,7 @@ public class PlayerCtrl : MonoBehaviour
 
         rb.velocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
         rb.AddForce(dir, ForceMode.Impulse);
+        PlaySound("WALLJUMP");
     }
 
     // 캐릭터 속도 제한 함수
@@ -325,7 +331,7 @@ public class PlayerCtrl : MonoBehaviour
                     _hit.transform.GetComponent<EnemyCtrl>().EnemyHit();
                 }
             }
-            audioSource.Play();
+            PlaySound("FIRE");
             isReload = true;
             StartCoroutine(Reload());
         }
@@ -423,5 +429,28 @@ public class PlayerCtrl : MonoBehaviour
     public void setReloadCoolTime(float f)
     {
         reloadCoolTime = f;
+    }
+
+    public void PlaySound(string action)
+    {
+        switch(action)
+        {
+            case "FIRE":
+                audioSource.clip = audioFire;
+                break;
+            case "WALLJUMP":
+                audioSource.clip = audioWallJump;
+                break;
+            case "RUSH":
+                audioSource.clip = audioRush;
+                break;
+        }
+        audioSource.Play();
+        //audioSource.clip = null;
+    }
+
+    public void StopSound()
+    {
+        audioSource.Stop();
     }
 }

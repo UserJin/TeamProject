@@ -31,7 +31,6 @@ public class FocusCtrl : MonoBehaviour
     [SerializeField]
     private float targetDistance;
 
-
     public enum State
     {
         IDLE,
@@ -219,6 +218,7 @@ public class FocusCtrl : MonoBehaviour
                 p_rb.useGravity = false;
                 state = State.RUSHTOENEMY;
             }
+            gameObject.GetComponent<PlayerCtrl>().PlaySound("RUSH");
         }
     }
 
@@ -239,7 +239,7 @@ public class FocusCtrl : MonoBehaviour
                 player.GetComponent<PlayerCtrl>().ChangeState(PlayerCtrl.State.IDLE);
                 p_cscl.isTrigger = false;
                 p_bxcl.isTrigger = false;
-                
+                gameObject.GetComponent<PlayerCtrl>().StopSound();
             }
         }
     }
@@ -268,7 +268,7 @@ public class FocusCtrl : MonoBehaviour
                 player.GetComponent<PlayerCtrl>().ChangeState(PlayerCtrl.State.IDLE);
                 p_cscl.isTrigger = false;
                 p_bxcl.isTrigger = false;
-                
+                gameObject.GetComponent<PlayerCtrl>().StopSound();
             }
         }
     }

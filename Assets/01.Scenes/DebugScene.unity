@@ -2446,6 +2446,21 @@ PrefabInstance:
       propertyPath: hpBar
       value: 
       objectReference: {fileID: 18581143}
+    - target: {fileID: 742492490843933616, guid: 198eacd94aff3fe4fbd567ee3728d424,
+        type: 3}
+      propertyPath: audioFire
+      value: 
+      objectReference: {fileID: 8300000, guid: 5802cc242c56cfa47a4b9ac4bb747662, type: 3}
+    - target: {fileID: 742492490843933616, guid: 198eacd94aff3fe4fbd567ee3728d424,
+        type: 3}
+      propertyPath: audioRush
+      value: 
+      objectReference: {fileID: 8300000, guid: afeee71af8712c649a1730923de494fd, type: 3}
+    - target: {fileID: 742492490843933616, guid: 198eacd94aff3fe4fbd567ee3728d424,
+        type: 3}
+      propertyPath: audioWallJump
+      value: 
+      objectReference: {fileID: 8300000, guid: 0fbc08f843188bf4e90a7a7ae4224190, type: 3}
     - target: {fileID: 1178413998203993647, guid: 198eacd94aff3fe4fbd567ee3728d424,
         type: 3}
       propertyPath: m_LocalPosition.x
