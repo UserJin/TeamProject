@@ -117,14 +117,14 @@ public class PlayerCtrl : MonoBehaviour
         moveSpeed = 9.0f;
         jumpPower = 20.0f;
         dashPower = 20.0f;
-        grav = -0.7f;
+        grav = -0.675f;
         h = 0.0f;
         v = 0.0f;
         hp = maxHp;
         hpRecoveryAmountPerSec = 10.0f;
         recoveryCoolTime = 5.0f;
         dashCoolTime = 2.0f;
-        reloadCoolTime = 1.0f;
+        reloadCoolTime = 0.7f;
         dashAvailable = true;
         isJumping = false;
         isDamaged = false;
@@ -418,5 +418,10 @@ public class PlayerCtrl : MonoBehaviour
     void CheckHp()
     {
         hpBar.value = hp / maxHp;
+    }
+    //리로드 시간 다르게
+    public void setReloadCoolTime(float f)
+    {
+        reloadCoolTime = f;
     }
 }

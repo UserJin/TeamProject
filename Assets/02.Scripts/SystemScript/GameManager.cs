@@ -97,7 +97,7 @@ public class GameManager : MonoBehaviour
     {
         _isSlowMode = true;
         Time.timeScale = slowTime;
-        Time.fixedDeltaTime = slowTime * 0.05f;
+        Time.fixedDeltaTime = slowTime * 0.5f;
     }
 
     // 슬로우 모드 비활성화

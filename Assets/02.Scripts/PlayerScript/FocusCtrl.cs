@@ -57,7 +57,7 @@ public class FocusCtrl : MonoBehaviour
         targetDistance = 100.0f;
 
         detectionRange = 36.0f;
-        focusingRange = 0.25f;
+        focusingRange = 0.1f;
         rushPower = 100.0f;
         focusingGage = 0.0f;
         maxFocusingGage = 3.0f;
@@ -78,6 +78,7 @@ public class FocusCtrl : MonoBehaviour
             {
                 ConsumeFocusingGage();
                 CheckHookPoint();
+                player.GetComponent<PlayerCtrl>().setReloadCoolTime(0.2f);
             }
             else if(state == State.RUSH)
             {
@@ -99,7 +100,7 @@ public class FocusCtrl : MonoBehaviour
             }
             if(state == State.FOCUS)
             {
-                cam.fieldOfView = (Mathf.Lerp(cam.fieldOfView, 30f, (float)(5/(cam.fieldOfView-30))));//줌인 서서히 하기. 최대에서 최소가는데 0.5초
+                cam.fieldOfView = (Mathf.Lerp(cam.fieldOfView, 25f, (float)(7.5/(cam.fieldOfView-25))));//줌인 서서히 하기. 최대에서 최소가는데 0.5초
             }
             else if(state == State.RUSH || state == State.RUSHTOENEMY)
             {
@@ -209,7 +210,6 @@ public class FocusCtrl : MonoBehaviour
                 state = State.RUSH;
                 Vector3 destPos = target.transform.position;
                 destPos.y += 5;
-                destPos = destPos + target.transform.forward * 2;
                 Vector3 dir = destPos - player.transform.position;
                 p_rb.velocity = Vector3.zero;
                 p_rb.AddForce(dir * rushPower);
@@ -229,7 +229,6 @@ public class FocusCtrl : MonoBehaviour
         {
             Vector3 destPos = target.transform.position;
             destPos.y += 5;
-            destPos = destPos + target.transform.forward * 2;
             float _dist = Vector3.Distance(p_tr.position, destPos);
             if(_dist <= 3f)
             {
@@ -250,16 +249,18 @@ public class FocusCtrl : MonoBehaviour
         if (target != null && state == State.RUSHTOENEMY)
         {
             Vector3 destPos = target.transform.position;
-            destPos.y += 1;
-            destPos = destPos + target.transform.forward * 5;
+            destPos.y += 5;
+            destPos = destPos + target.transform.forward * 8;
+
             p_tr.position = Vector3.Lerp(p_tr.position, target.transform.position, Time.deltaTime * enemyRushPower);
             float _dist = Vector3.Distance(p_tr.position, target.transform.position);
             if (_dist <= 3f)
             {
                 player.GetComponent<Rigidbody>().velocity = Vector3.zero;
+                player.GetComponent<Transform>().position = destPos;
                 target.GetComponentInParent<EnemyCtrl>().SendMessage("EnemyDie"); // 적 처치 메시지 보내기
                 player.GetComponent<PlayerCtrl>().ChangeJumpState(true); // 플레이어의 점프 여부를 참으로 변경
-                p_rb.AddForce(Vector3.up * 20.0f, ForceMode.Impulse);
+                p_rb.AddForce(Vector3.up * 25.0f, ForceMode.Impulse);
                 p_rb.useGravity = true;
                 target = null;
                 targetDistance = 100.0f;
