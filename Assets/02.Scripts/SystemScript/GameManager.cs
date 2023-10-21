@@ -120,6 +120,7 @@ public class GameManager : MonoBehaviour
         state = State.GAMEOVER;
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.None;
+        ComboManager.instance.StopCombo();
         OnGamePause?.Invoke(this, EventArgs.Empty);
         SetUI(false);
         _gameoverPannel.SetActive(true);
