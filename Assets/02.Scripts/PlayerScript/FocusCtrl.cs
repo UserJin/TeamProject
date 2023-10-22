@@ -60,7 +60,7 @@ public class FocusCtrl : MonoBehaviour
         rushPower = 100.0f;
         focusingGage = 0.0f;
         maxFocusingGage = 3.0f;
-        enemyRushPower = 10.0f;
+        enemyRushPower = 3.0f;
         focusingGage = maxFocusingGage;
         state = State.IDLE;
 
@@ -99,16 +99,16 @@ public class FocusCtrl : MonoBehaviour
             }
             if(state == State.FOCUS)
             {
-                cam.fieldOfView = (Mathf.Lerp(cam.fieldOfView, 25f, (float)(7.5/(cam.fieldOfView-25))));//줌인 서서히 하기. 최대에서 최소가는데 0.5초
+                cam.fieldOfView = (Mathf.Lerp(cam.fieldOfView, 25f, (float)(50/(cam.fieldOfView-25))));//줌인 서서히 하기. 최대에서 최소가는데 0.5초
             }
             else if(state == State.RUSH || state == State.RUSHTOENEMY)
             {
-                cam.fieldOfView = (Mathf.Lerp(cam.fieldOfView, 120f, (float)(0.3/(120-cam.fieldOfView))));//줌아웃 빠르게 하기. 최소에서 최대가는데 0.05초
+                cam.fieldOfView = (Mathf.Lerp(cam.fieldOfView, 120f, (float)(1.2/(120-cam.fieldOfView))));//줌아웃 빠르게 하기. 최소에서 최대가는데 0.05초
 
             }
             else if(state == State.IDLE)
             {
-            cam.fieldOfView = (Mathf.Lerp(cam.fieldOfView, 70f, (float)(0.25)));//줌아웃 빠르게 하기. 최소에서 최대가는데 0.05초
+            cam.fieldOfView = (Mathf.Lerp(cam.fieldOfView, 70f, (float)(0.5)));//줌아웃 빠르게 하기. 최소에서 최대가는데 0.05초
 
             }
         }
