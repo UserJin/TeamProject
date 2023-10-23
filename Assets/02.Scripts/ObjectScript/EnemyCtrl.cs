@@ -20,7 +20,9 @@ public class EnemyCtrl : MonoBehaviour
     private float fireStartRate = 1.0f;
     private float fireRate = 1.0f;
     //private float bulletSpeed = 20.0f;
-
+    
+    private AudioSource aS;
+    public GameObject hat;
     // Enemy의 상태
     public enum State
     {
@@ -35,6 +37,7 @@ public class EnemyCtrl : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        aS = GetComponent<AudioSource>();
         player = GameObject.FindGameObjectWithTag("_Player");
         hookPoint = gameObject.transform.GetChild(0).Find("EnemyHookPoint").gameObject;
         tr = gameObject.transform;
@@ -43,13 +46,17 @@ public class EnemyCtrl : MonoBehaviour
         bulletPrefab = Resources.Load<GameObject>("Bullet/ammo_44_40");
         firePoint = tr.Find("FirePoint").gameObject;
         anim = GetComponent<Animator>();
+        GameObject hat = tr.GetChild(0).Find("Hat_1").gameObject;
+        
+
     }
 
     // Update is called once per frame
     void Update()
     {
+
         // 적이 사망하거나 피격당하지 않았을 때만 실행
-        if(state != State.DIE && state != State.HIT)
+        if (state != State.DIE && state != State.HIT)
         {
             dist = Vector3.Distance(player.transform.position, tr.position);
             //플레이어 감지
@@ -78,6 +85,8 @@ public class EnemyCtrl : MonoBehaviour
     {
         GameObject bullet = Instantiate(bulletPrefab, firePoint.transform);
         bullet.transform.SetParent(null);
+        aS.Play();
+
         //bullet.transform.LookAt(new Vector3 (player.transform.position.x, player.transform.position.y, player.transform.position.z));
         //bullet.GetComponent<Rigidbody>().velocity = (player.transform.position - tr.position).normalized * bulletSpeed;
     }
@@ -98,13 +107,14 @@ public class EnemyCtrl : MonoBehaviour
     //모자 날려버리기
     public void Force2Hat()
     {
-        GameObject hat = tr.GetChild(0).Find("Hat_1").gameObject;
         if(hat != null)
         {
+
+            
             hat.transform.SetParent(null);
             hat.GetComponent<Rigidbody>().useGravity = true;
             hat.GetComponent<Rigidbody>().isKinematic = false;
-            hat.GetComponent<Rigidbody>().AddForce((tr.position - player.transform.position).normalized * 5.0f + Vector3.up, ForceMode.Impulse);
+            hat.GetComponent<Rigidbody>().AddForce((tr.position - player.transform.position).normalized * 8.0f + Vector3.up, ForceMode.Impulse);
             hat.GetComponent<BoxCollider>().enabled = true;
         }
     }

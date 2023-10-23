@@ -223,8 +223,7 @@ MeshRenderer:
   m_RayTraceProcedural: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
-  m_Materials:
-  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+  m_Materials: []
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -325,6 +324,9 @@ MonoBehaviour:
   grav: -0.1
   hpBar: {fileID: 0}
   audioSource: {fileID: 0}
+  audioFire: {fileID: 0}
+  audioWallJump: {fileID: 0}
+  audioRush: {fileID: 0}
 --- !u!114 &3343828815226579131
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -337,6 +339,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3137ec0f813474e468587da95688994c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  target: {fileID: 0}
   focusBar: {fileID: 0}
   sliderFill: {fileID: 0}
   fill: {fileID: 0}

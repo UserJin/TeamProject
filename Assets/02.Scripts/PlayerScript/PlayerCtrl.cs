@@ -60,6 +60,11 @@ public class PlayerCtrl : MonoBehaviour
     public AudioClip audioWallJump;
     public AudioClip audioRush;
 
+    private GameObject rushSound;
+    private GameObject wallJumpSound;
+    private GameObject shotSound;
+
+
     IEnumerator recoveryCoroutine; // 자동 회복 코루틴
 
     public enum State
@@ -74,6 +79,10 @@ public class PlayerCtrl : MonoBehaviour
     void Start()
     {
         InitPlayer();
+        rushSound = gameObject.transform.Find("rushSound").gameObject;
+        wallJumpSound = gameObject.transform.Find("wallJumpSound").gameObject;
+        shotSound = gameObject.transform.Find("shotSound").gameObject;
+
     }
 
     // Update is called once per frame
@@ -138,7 +147,7 @@ public class PlayerCtrl : MonoBehaviour
         groundLayer = 1 << LayerMask.NameToLayer("GROUND");
         wallLayer = 1 << LayerMask.NameToLayer("WALL");
         wallRunForce = 500.0f;
-        wallJumpUpForce = 20.0f;
+        wallJumpUpForce = 17.0f;
         wallJumpSideForce = 2.0f;
         maxVelocity = 10.0f;
 
@@ -146,7 +155,6 @@ public class PlayerCtrl : MonoBehaviour
         rb = GetComponent<Rigidbody>();
         audioSource = GetComponent<AudioSource>();
         cam = Camera.main;
-
         // x축 y축 회전 잠금
         rb.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
 
@@ -436,21 +444,17 @@ public class PlayerCtrl : MonoBehaviour
         switch(action)
         {
             case "FIRE":
-                audioSource.clip = audioFire;
+                shotSound.GetComponent <AudioPlay>().audioPlay();
                 break;
             case "WALLJUMP":
-                audioSource.clip = audioWallJump;
+                wallJumpSound.GetComponent<AudioPlay>().audioPlay();
                 break;
             case "RUSH":
-                audioSource.clip = audioRush;
+                rushSound.GetComponent<AudioPlay>().audioPlay();
                 break;
         }
-        audioSource.Play();
         //audioSource.clip = null;
     }
 
-    public void StopSound()
-    {
-        audioSource.Stop();
-    }
+    
 }
