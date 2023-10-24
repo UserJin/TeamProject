@@ -216,6 +216,7 @@ public class FocusCtrl : MonoBehaviour
             // HookPoint가 일반형인지 적의 HookPoint인지 구분
             if(target.CompareTag("_HookPoint"))
             {
+                PlayerGravity(false);
                 state = State.RUSH;
                 Vector3 destPos = target.transform.position;
                 destPos.y += 5;
@@ -225,7 +226,6 @@ public class FocusCtrl : MonoBehaviour
             }
             else if(target.CompareTag("_EnemyHookPoint"))
             {
-                p_rb.useGravity = false;
                 state = State.RUSHTOENEMY;
             }
             gameObject.GetComponent<PlayerCtrl>().PlaySound("RUSH");
@@ -251,6 +251,8 @@ public class FocusCtrl : MonoBehaviour
                 p_cscl.isTrigger = false;
                 p_bxcl.isTrigger = false;
                 focusingGage = maxFocusingGage;
+                PlayerGravity(true);
+
             }
         }
     }
@@ -278,6 +280,7 @@ public class FocusCtrl : MonoBehaviour
                 p_cscl.isTrigger = false;
                 p_bxcl.isTrigger = false;
                 target = null;
+
                 Invoke("stompEnemy", 0.3f);
             }
         }
@@ -286,6 +289,8 @@ public class FocusCtrl : MonoBehaviour
     {
         player.GetComponent<PlayerCtrl>().ChangeJumpState(true); // 플레이어의 점프 여부를 참으로 변경
         p_rb.AddForce(Vector3.up * 27.0f, ForceMode.Impulse);
+        PlayerGravity(true);
+
         focusingGage = maxFocusingGage;
 
     }
@@ -347,5 +352,10 @@ public class FocusCtrl : MonoBehaviour
         {
             focusBar.value = focusingGage / maxFocusingGage;
         }
+    }
+    public void PlayerGravity(bool i)
+    {
+        p_rb.useGravity = i;
+        player.GetComponent<ConstantForce>().enabled = i;
     }
 }

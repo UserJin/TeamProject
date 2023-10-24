@@ -39,7 +39,6 @@ public class PlayerCtrl : MonoBehaviour
     float reloadCoolTime; // 사격 쿨타임
 
     [SerializeField]
-    private float grav = -0.7f; // 플레이어에게 추가로 적용되는 중력
 
     private bool isJumping; // 현재 점프 여부
     private bool dashAvailable; // 대쉬 사용 가능 여부
@@ -63,8 +62,7 @@ public class PlayerCtrl : MonoBehaviour
     private GameObject rushSound;
     private GameObject wallJumpSound;
     private GameObject shotSound;
-
-
+    private ConstantForce userGrav;
     IEnumerator recoveryCoroutine; // 자동 회복 코루틴
 
     public enum State
@@ -82,6 +80,7 @@ public class PlayerCtrl : MonoBehaviour
         rushSound = gameObject.transform.Find("rushSound").gameObject;
         wallJumpSound = gameObject.transform.Find("wallJumpSound").gameObject;
         shotSound = gameObject.transform.Find("shotSound").gameObject;
+        userGrav = gameObject.GetComponent<ConstantForce>();
 
     }
 
@@ -117,7 +116,6 @@ public class PlayerCtrl : MonoBehaviour
         if (state == State.IDLE)
         {
             Move();
-            PlayerGravity();
         }
         if (state == State.WALLRUN)
         {
@@ -131,7 +129,6 @@ public class PlayerCtrl : MonoBehaviour
         moveSpeed = 9.0f;
         jumpPower = 20.0f;
         dashPower = 20.0f;
-        grav = -0.675f;
         h = 0.0f;
         v = 0.0f;
         hp = maxHp;
@@ -242,7 +239,7 @@ public class PlayerCtrl : MonoBehaviour
             }
             else if(Input.GetKeyUp(KeyCode.Space))
             {
-                rb.useGravity = true;
+                PlayerGravity(true);
                 state = State.IDLE;
                 WallJump();
             }
@@ -251,7 +248,7 @@ public class PlayerCtrl : MonoBehaviour
         {
             if(state == State.WALLRUN)
             {
-                rb.useGravity = true;
+                PlayerGravity(true);
                 state = State.IDLE;
             }
         }
@@ -260,7 +257,7 @@ public class PlayerCtrl : MonoBehaviour
     // 캐릭터 벽타기 이동 함수(fixedUpdate)
     void WallRunMovement()
     {
-        rb.useGravity = false;
+        PlayerGravity(false);
         rb.velocity = new Vector3(rb.velocity.x, 0, rb.velocity.z);
         LimitVelocity();
         //Debug.Log(rb.velocity);
@@ -305,10 +302,11 @@ public class PlayerCtrl : MonoBehaviour
         transform.eulerAngles = new Vector3(0, Camera.main.transform.eulerAngles.y, 0);
     }
 
-    // 플레이어에게 적용되는 추가 중력
-    void PlayerGravity()
+    // 플레이어에게 적용되는 추가 중력 - constant force로 구현 변경함. 이유 : 슬로모션때 fixedupdate가 이상하게 적용됨.
+    public void PlayerGravity(bool i)
     {
-        rb.AddForce(new Vector3(0, grav, 0), ForceMode.Impulse);
+        rb.useGravity=i;
+        userGrav.enabled = i;
     }
 
     // 플레이어가 땅에 닿았을 경우 점프 횟수를 초기화하는 함수
