@@ -22,7 +22,6 @@ public class EnemyCtrl : MonoBehaviour
     //private float bulletSpeed = 20.0f;
     
     private AudioSource aS;
-    public GameObject hat;
     // Enemy의 상태
     public enum State
     {
@@ -46,9 +45,6 @@ public class EnemyCtrl : MonoBehaviour
         bulletPrefab = Resources.Load<GameObject>("Bullet/ammo_44_40");
         firePoint = tr.Find("FirePoint").gameObject;
         anim = GetComponent<Animator>();
-        GameObject hat = tr.GetChild(0).Find("Hat_1").gameObject;
-        
-
     }
 
     // Update is called once per frame
@@ -107,14 +103,13 @@ public class EnemyCtrl : MonoBehaviour
     //모자 날려버리기
     public void Force2Hat()
     {
+        GameObject hat = tr.GetChild(0).Find("Hat_1").gameObject;
         if(hat != null)
         {
-
-            
             hat.transform.SetParent(null);
             hat.GetComponent<Rigidbody>().useGravity = true;
             hat.GetComponent<Rigidbody>().isKinematic = false;
-            hat.GetComponent<Rigidbody>().AddForce((tr.position - player.transform.position).normalized * 8.0f + Vector3.up, ForceMode.Impulse);
+            hat.GetComponent<Rigidbody>().AddForce((tr.position - player.transform.position).normalized * 10.0f + Vector3.up, ForceMode.Impulse);
             hat.GetComponent<BoxCollider>().enabled = true;
         }
     }

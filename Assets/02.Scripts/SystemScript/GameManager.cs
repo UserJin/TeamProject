@@ -89,7 +89,7 @@ public class GameManager : MonoBehaviour
         _gameClearPannel.SetActive(false);
         _gameoverPannel.SetActive(false);
         scoreManager = new ScoreManager();
-        slowTime = 0.1f;
+        slowTime = 0.12f;
         SetUI(true);
     }
 
@@ -99,6 +99,7 @@ public class GameManager : MonoBehaviour
         _isSlowMode = true;
         Time.timeScale = slowTime;
         Time.fixedDeltaTime = slowTime * 0.02f;
+
     }
 
     // 슬로우 모드 비활성화

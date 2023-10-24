@@ -920,11 +920,11 @@ PlayerSettings:
   apiCompatibilityLevel: 6
   activeInputHandler: 0
   windowsGamepadBackendHint: 0
-  cloudProjectId: 19a7decb-f1b0-4888-b130-bdb5f2e58f5f
+  cloudProjectId: 0e6cecf0-9e39-44a0-aa21-dff0a4bd6d3b
   framebufferDepthMemorylessMode: 0
   qualitySettingsNames: []
   projectName: TeamProject
-  organizationId: knj
+  organizationId: mokavdol
   cloudEnabled: 0
   legacyClampBlendShapeWeights: 0
   hmiLoadingImage: {fileID: 0}

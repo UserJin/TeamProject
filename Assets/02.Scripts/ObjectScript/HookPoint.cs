@@ -32,16 +32,16 @@ public class HookPoint : MonoBehaviour
     {
         if(state == State.ONABLE)
         {
-            gameObject.GetComponent<Renderer>().material.color = Color.green;
+            gameObject.GetComponent<Renderer>().material.color = Color.red;
         }
         else if(state == State.TARGETED)
         {
-            gameObject.GetComponent<Renderer>().material.color = Color.blue;
+            gameObject.GetComponent<Renderer>().material.color = Color.yellow;
             transform.LookAt(player.transform.position);
         }
         else
         {
-            gameObject.GetComponent<Renderer>().material.color = Color.red;
+            gameObject.GetComponent<Renderer>().material.color = Color.gray;
         }
     }
 

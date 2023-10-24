@@ -104,16 +104,20 @@ public class FocusCtrl : MonoBehaviour
             }
             if (state == State.FOCUS)
             {
-                cam.fieldOfView = (Mathf.Lerp(cam.fieldOfView, 30f, (4f / (cam.fieldOfView - 30f))));//줌인 서서히 하기. 최대에서 최소가는데 0.5초
+                cam.fieldOfView = (Mathf.Lerp(cam.fieldOfView, 35f, (4f / (cam.fieldOfView - 30f))));//줌인 서서히 하기. 최대에서 최소가는데 0.5초
+                cam.nearClipPlane = (Mathf.Lerp(cam.nearClipPlane, 0.3f, (0.2f)));//줌아웃 빠르게 하기. 최소에서 최대가는데 0.05초
+
             }
             else if (state == State.RUSH || state == State.RUSHTOENEMY)
             {
-                cam.fieldOfView = (Mathf.Lerp(cam.fieldOfView, 100f, (30f / (100f - cam.fieldOfView))));//줌아웃 빠르게 하기. 최소에서 최대가는데 0.05초
+                cam.fieldOfView = (Mathf.Lerp(cam.fieldOfView, 120f, (0.1f)));//줌아웃 빠르게 하기. 최소에서 최대가는데 0.05초
+                cam.nearClipPlane = (Mathf.Lerp(cam.nearClipPlane, 0.1f, (0.2f)));//줌아웃 빠르게 하기. 최소에서 최대가는데 0.05초
 
             }
-            else if (state == State.IDLE)
+            else if (state == State.IDLE || state ==State.EXHAUST)
             {
-                cam.fieldOfView = (Mathf.Lerp(cam.fieldOfView, 65f, (0.2f)));//줌아웃 빠르게 하기. 최소에서 최대가는데 0.05초
+                cam.fieldOfView = (Mathf.Lerp(cam.fieldOfView, 60f, (0.2f)));//줌아웃 빠르게 하기. 최소에서 최대가는데 0.05초
+                cam.nearClipPlane = (Mathf.Lerp(cam.nearClipPlane, 0.3f, (0.2f)));//줌아웃 빠르게 하기. 최소에서 최대가는데 0.05초
 
             }
         }
@@ -259,7 +263,7 @@ public class FocusCtrl : MonoBehaviour
                 
             Vector3 destPos = target.transform.position;
             destPos.y += 5f;
-            destPos = destPos + target.transform.forward * 2f;
+            destPos = destPos + target.transform.forward * 4f;
             p_tr.position = Vector3.Lerp(p_tr.position, target.transform.position, Time.deltaTime * enemyRushPower);
             float _dist = Vector3.Distance(p_tr.position, target.transform.position);
             if (_dist <= 1f || ((_dist<= 10f) && (p_tr.position.y<destPos.y-3f)))
