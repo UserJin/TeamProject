@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class EnemyCtrl : MonoBehaviour
 {
-    private float detectionRange = 20.0f;
+    private float detectionRange = 30.0f;
     private float dist = 0.0f;
 
     private GameObject player;
@@ -42,7 +42,7 @@ public class EnemyCtrl : MonoBehaviour
         tr = gameObject.transform;
         hookPoint.SetActive(false);
         //bulletPrefab = Resources.Load<GameObject>("Bullet/EnemyBullet");
-        bulletPrefab = Resources.Load<GameObject>("Bullet/ammo_44_40");
+        bulletPrefab = Resources.Load<GameObject>("Bullet/Bullet");
         firePoint = tr.Find("FirePoint").gameObject;
         anim = GetComponent<Animator>();
     }

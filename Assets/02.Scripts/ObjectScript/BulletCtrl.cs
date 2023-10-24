@@ -9,6 +9,10 @@ public class BulletCtrl : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        
+    }
+    private void Awake()
+    {
         StartCoroutine(BulletDestroy());
         GameObject _player = GameObject.FindGameObjectWithTag("_Player");
         transform.LookAt(_player.transform.position);
