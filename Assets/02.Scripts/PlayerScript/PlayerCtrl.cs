@@ -92,6 +92,7 @@ public class PlayerCtrl : MonoBehaviour
             if (state == State.IDLE)
             {
                 MoveInput();
+                //Move();
                 CheckGround();
                 Jump();
                 Dash();
@@ -161,8 +162,8 @@ public class PlayerCtrl : MonoBehaviour
     // 이동 입력을 받는 함수
     void MoveInput()
     {
-        h = Input.GetAxis("Horizontal");
-        v = Input.GetAxis("Vertical");
+        h = Input.GetAxisRaw("Horizontal");
+        v = Input.GetAxisRaw("Vertical");
     }
 
     // 실제 이동 함수, fixedUpdate에서 처리
@@ -172,6 +173,11 @@ public class PlayerCtrl : MonoBehaviour
         dir = dir.normalized;
 
         rb.MovePosition(tr.position + dir * moveSpeed * Time.deltaTime);
+        //rb.velocity = dir * moveSpeed + new Vector3(0, rb.velocity.y, 0);
+        //if(h == 0 && v == 0)
+        //{
+        //    rb.velocity = new Vector3(0, rb.velocity.y, 0);
+        //}
     }
 
     // 점프 함수
