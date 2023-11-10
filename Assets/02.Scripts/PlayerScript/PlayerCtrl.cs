@@ -343,6 +343,8 @@ public class PlayerCtrl : MonoBehaviour
                     _hit.transform.GetComponent<EnemyCtrl>().EnemyHit();
                 }
             }
+            tr.GetComponent<RifleCtrl>().Shoot();
+
             PlaySound("FIRE");
             isReload = true;
             StartCoroutine(Reload());
