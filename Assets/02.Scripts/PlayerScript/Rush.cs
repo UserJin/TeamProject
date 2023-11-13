@@ -3,8 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-
-public class FocusCtrl : MonoBehaviour
+/*public class Rush : MonoBehaviour
 {
     Camera cam;
 
@@ -114,7 +113,7 @@ public class FocusCtrl : MonoBehaviour
                 cam.nearClipPlane = (Mathf.Lerp(cam.nearClipPlane, 0.1f, (0.2f)));//줌아웃 빠르게 하기. 최소에서 최대가는데 0.05초
 
             }
-            else if (state == State.IDLE || state ==State.EXHAUST)
+            else if (state == State.IDLE || state == State.EXHAUST)
             {
                 cam.fieldOfView = (Mathf.Lerp(cam.fieldOfView, 60f, (0.2f)));//줌아웃 빠르게 하기. 최소에서 최대가는데 0.05초
                 cam.nearClipPlane = (Mathf.Lerp(cam.nearClipPlane, 0.3f, (0.2f)));//줌아웃 빠르게 하기. 최소에서 최대가는데 0.05초
@@ -146,7 +145,7 @@ public class FocusCtrl : MonoBehaviour
         CheckTargetState();
         if (points != null)
         {
-            foreach(GameObject point in points)
+            foreach (GameObject point in points)
             {
                 HookPoint.State _state = point.GetComponent<HookPoint>().GetState(); // 갈고리 포인트 상태
 
@@ -157,8 +156,8 @@ public class FocusCtrl : MonoBehaviour
                 if (Vector3.Distance(this.transform.position, point.transform.position) < detectionRange && _state == HookPoint.State.ONABLE) // 일정 범위 이내 + 갈고리 사용 가능 상태
                 {
                     Vector3 screenPoint = cam.WorldToViewportPoint(point.transform.position); // 해당 갈고리 화면상 위치
-                    
-                    if(screenPoint.x > focusingRange && screenPoint.x < 1-focusingRange && screenPoint.y > focusingRange && screenPoint.y < 1 - focusingRange) // 일정 범위 이내라면
+
+                    if (screenPoint.x > focusingRange && screenPoint.x < 1 - focusingRange && screenPoint.y > focusingRange && screenPoint.y < 1 - focusingRange) // 일정 범위 이내라면
                     {
                         Vector2 screenPoint2D = screenPoint; // 2D 좌표로 변경
                         Vector2 tmp = new Vector2(0.5f, 0.5f) - screenPoint2D; // 중앙 값과 차이만 낢김
@@ -173,7 +172,7 @@ public class FocusCtrl : MonoBehaviour
                 }
             }
         }
-        
+
     }
 
     // 집중 상태 관련 함수
@@ -191,7 +190,7 @@ public class FocusCtrl : MonoBehaviour
         {
             CheckTargetState();
             // 타겟이 있을 때만 돌진
-            if(target != null)
+            if (target != null)
             {
                 GameManager.instance.DisableSlowMode();
                 p_cscl.isTrigger = true; // 일시적으로 충돌판정 X
@@ -210,11 +209,11 @@ public class FocusCtrl : MonoBehaviour
 
     void Rush()
     {
-        if(target != null)
+        if (target != null)
         {
             player.GetComponent<PlayerCtrl>().ChangeState(PlayerCtrl.State.RUSH);
             // HookPoint가 일반형인지 적의 HookPoint인지 구분
-            if(target.CompareTag("_HookPoint"))
+            if (target.CompareTag("_HookPoint"))
             {
                 PlayerGravity(false);
                 state = State.RUSH;
@@ -224,7 +223,7 @@ public class FocusCtrl : MonoBehaviour
                 p_rb.velocity = Vector3.zero;
                 p_rb.AddForce(dir * rushPower);
             }
-            else if(target.CompareTag("_EnemyHookPoint"))
+            else if (target.CompareTag("_EnemyHookPoint"))
             {
                 state = State.RUSHTOENEMY;
             }
@@ -235,13 +234,13 @@ public class FocusCtrl : MonoBehaviour
     // 타겟이 돌진 시 일정 거리에 도달하면 감속시키는 함수
     void RushToTarget()
     {
-        if(target != null && state == State.RUSH)
+        if (target != null && state == State.RUSH)
         {
-            
+
             Vector3 destPos = target.transform.position;
             destPos.y += 5f;
             float _dist = Vector3.Distance(p_tr.position, destPos);
-            if(_dist <= 3f)
+            if (_dist <= 3f)
             {
                 player.GetComponent<Rigidbody>().velocity = player.GetComponent<Rigidbody>().velocity * 0.01f;
                 target = null;
@@ -261,16 +260,16 @@ public class FocusCtrl : MonoBehaviour
     {
         if (target != null && state == State.RUSHTOENEMY)
         {
-            
-                
+
+
             Vector3 destPos = target.transform.position;
             destPos.y += 5f;
             destPos = destPos + target.transform.forward * 4f;
             p_tr.position = Vector3.Lerp(p_tr.position, target.transform.position, Time.deltaTime * enemyRushPower);
             float _dist = Vector3.Distance(p_tr.position, target.transform.position);
-            if (_dist <= 1f || ((_dist<= 10f) && (p_tr.position.y<destPos.y-3f)))
+            if (_dist <= 1f || ((_dist <= 10f) && (p_tr.position.y < destPos.y - 3f)))
             {
-                destPos.y = target.transform.position.y+0.5f;
+                destPos.y = target.transform.position.y + 0.5f;
                 player.GetComponent<Transform>().position = (destPos);
                 player.GetComponent<Rigidbody>().velocity = new Vector3(0f, -0.05f, 0);
                 targetDistance = 100.0f;
@@ -297,7 +296,7 @@ public class FocusCtrl : MonoBehaviour
     // 타겟의 현재 화면 존재 여부 확인 함수
     void CheckTargetState()
     {
-        if(target != null)
+        if (target != null)
         {
             Vector3 screenPoint = cam.WorldToViewportPoint(target.transform.position);
             if (screenPoint.x > focusingRange && screenPoint.x < 1 - focusingRange && screenPoint.y > focusingRange && screenPoint.y < 1 - focusingRange)
@@ -318,7 +317,7 @@ public class FocusCtrl : MonoBehaviour
     void ConsumeFocusingGage()
     {
         focusingGage -= Time.unscaledDeltaTime;
-        if(focusingGage <= 0.0f)
+        if (focusingGage <= 0.0f)
         {
             GameManager.instance.DisableSlowMode();
             state = State.EXHAUST;
@@ -335,7 +334,7 @@ public class FocusCtrl : MonoBehaviour
     void RecoveryFocusingGage()
     {
         focusingGage += Time.deltaTime;
-        if(focusingGage >= maxFocusingGage && state == State.EXHAUST)
+        if (focusingGage >= maxFocusingGage && state == State.EXHAUST)
         {
             focusingGage = maxFocusingGage;
             if (fill != null)
@@ -348,7 +347,7 @@ public class FocusCtrl : MonoBehaviour
 
     void CheckFocusBar()
     {
-        if(focusBar != null)
+        if (focusBar != null)
         {
             focusBar.value = focusingGage / maxFocusingGage;
         }
@@ -359,3 +358,4 @@ public class FocusCtrl : MonoBehaviour
         player.GetComponent<ConstantForce>().enabled = i;
     }
 }
+*/

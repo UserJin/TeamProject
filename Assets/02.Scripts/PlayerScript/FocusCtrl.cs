@@ -75,14 +75,14 @@ public class FocusCtrl : MonoBehaviour
             Focus();
             if (state == State.IDLE)
             {
-                player.GetComponent<PlayerCtrl>().setReloadCoolTime(0.7f);
+                player.GetComponent<FireCtrl>().setReloadCoolTime(0.7f);
 
             }
             else if (state == State.FOCUS)
             {
                 ConsumeFocusingGage();
                 CheckHookPoint();
-                player.GetComponent<PlayerCtrl>().setReloadCoolTime(0.05f);
+                player.GetComponent<FireCtrl>().setReloadCoolTime(0.3f);
             }
             else if (state == State.RUSH)
             {
@@ -104,19 +104,19 @@ public class FocusCtrl : MonoBehaviour
             }
             if (state == State.FOCUS)
             {
-                cam.fieldOfView = (Mathf.Lerp(cam.fieldOfView, 35f, (4f / (cam.fieldOfView - 30f))));//줌인 서서히 하기. 최대에서 최소가는데 0.5초
+                cam.fieldOfView = (Mathf.Lerp(cam.fieldOfView, 40f, (4f / (cam.fieldOfView - 30f))));//줌인 서서히 하기. 최대에서 최소가는데 0.5초
                 cam.nearClipPlane = (Mathf.Lerp(cam.nearClipPlane, 0.3f, (0.2f)));//줌아웃 빠르게 하기. 최소에서 최대가는데 0.05초
 
             }
             else if (state == State.RUSH || state == State.RUSHTOENEMY)
             {
-                cam.fieldOfView = (Mathf.Lerp(cam.fieldOfView, 120f, (0.1f)));//줌아웃 빠르게 하기. 최소에서 최대가는데 0.05초
+                cam.fieldOfView = (Mathf.Lerp(cam.fieldOfView, 140f, (0.1f)));//줌아웃 빠르게 하기. 최소에서 최대가는데 0.05초
                 cam.nearClipPlane = (Mathf.Lerp(cam.nearClipPlane, 0.1f, (0.2f)));//줌아웃 빠르게 하기. 최소에서 최대가는데 0.05초
 
             }
             else if (state == State.IDLE || state ==State.EXHAUST)
             {
-                cam.fieldOfView = (Mathf.Lerp(cam.fieldOfView, 60f, (0.2f)));//줌아웃 빠르게 하기. 최소에서 최대가는데 0.05초
+                cam.fieldOfView = (Mathf.Lerp(cam.fieldOfView, 90f, (0.2f)));//줌아웃 빠르게 하기. 최소에서 최대가는데 0.05초
                 cam.nearClipPlane = (Mathf.Lerp(cam.nearClipPlane, 0.3f, (0.2f)));//줌아웃 빠르게 하기. 최소에서 최대가는데 0.05초
 
             }
@@ -287,7 +287,6 @@ public class FocusCtrl : MonoBehaviour
     }
     void stompEnemy()
     {
-        player.GetComponent<PlayerCtrl>().ChangeJumpState(true); // 플레이어의 점프 여부를 참으로 변경
         p_rb.AddForce(Vector3.up * 27.0f, ForceMode.Impulse);
         PlayerGravity(true);
 

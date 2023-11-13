@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class FocusCtrl : MonoBehaviour
+/*public class FocusCtrl : MonoBehaviour
 {
     Camera cam;
 
@@ -359,3 +359,4 @@ public class FocusCtrl : MonoBehaviour
         player.GetComponent<ConstantForce>().enabled = i;
     }
 }
+*/
