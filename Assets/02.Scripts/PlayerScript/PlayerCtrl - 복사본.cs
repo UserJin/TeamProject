@@ -103,7 +103,7 @@ using System;
                 WallRun();
             }
             CheckHp();
-            Recvoery();
+            recovery();
             if (state != State.RUSH)
             {
                 Shoot();
@@ -350,7 +350,7 @@ using System;
     }
 
     // 체력 자동 회복 코드
-    void Recvoery()
+    void recovery()
     {
         if(!isDamaged && hp < maxHp)
         {

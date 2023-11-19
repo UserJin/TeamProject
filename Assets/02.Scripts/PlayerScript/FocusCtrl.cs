@@ -31,6 +31,8 @@ public class FocusCtrl : MonoBehaviour
     [SerializeField]
     private float targetDistance;
 
+    private Rush rush;
+
     public enum State
     {
         IDLE,
@@ -104,7 +106,7 @@ public class FocusCtrl : MonoBehaviour
             }
             if (state == State.FOCUS)
             {
-                cam.fieldOfView = (Mathf.Lerp(cam.fieldOfView, 40f, (4f / (cam.fieldOfView - 30f))));//줌인 서서히 하기. 최대에서 최소가는데 0.5초
+                cam.fieldOfView = (Mathf.Lerp(cam.fieldOfView, 40f, (12f / (cam.fieldOfView - 30f))));//줌인 서서히 하기. 최대에서 최소가는데 0.5초
                 cam.nearClipPlane = (Mathf.Lerp(cam.nearClipPlane, 0.3f, (0.2f)));//줌아웃 빠르게 하기. 최소에서 최대가는데 0.05초
 
             }

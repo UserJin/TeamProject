@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using System;
 
-public class TfMovement : MonoBehaviour
+public class WallRunMovement : MonoBehaviour
     
 {
     // 멤버 변수 목록

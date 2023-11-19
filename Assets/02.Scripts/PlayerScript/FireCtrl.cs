@@ -29,26 +29,28 @@ public class FireCtrl : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Shoot();
+
+        if (Input.GetMouseButtonDown(0) && !isReload)
+        {
+            Shoot();
+        }
     }
     // 공격 함수
     void Shoot()
     {
-        RaycastHit _hit;
-        if (Input.GetMouseButtonDown(0) && !isReload)
+        RaycastHit _hit;  
+        //Debug.DrawRay(cam.transform.position, cam.transform.forward * 100.0f, Color.red);
+        if (Physics.Raycast(pc.cam.transform.position, pc.cam.transform.forward * 100.0f, out _hit))
         {
-            //Debug.DrawRay(cam.transform.position, cam.transform.forward * 100.0f, Color.red);
-            if (Physics.Raycast(pc.cam.transform.position, pc.cam.transform.forward * 100.0f, out _hit))
+            if (_hit.transform.gameObject.CompareTag("_Enemy"))
             {
-                if (_hit.transform.gameObject.CompareTag("_Enemy"))
-                {
-                    _hit.transform.GetComponent<EnemyCtrl>().EnemyHit();
-                }
+                _hit.transform.GetComponent<EnemyCtrl>().EnemyHit();
             }
-            PlaySound("FIRE");
-            isReload = true;
-            StartCoroutine(Reload());
         }
+        PlaySound("FIRE");
+        isReload = true;
+        StartCoroutine(Reload());
+        
     }
     // 사격 쿨타임 코루틴
     IEnumerator Reload()

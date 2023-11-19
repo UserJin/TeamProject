@@ -67,9 +67,9 @@ Camera:
     y: 0
     width: 1
     height: 1
-  near clip plane: 0.3
+  near clip plane: 0.2
   far clip plane: 1000
-  field of view: 60.000004
+  field of view: 90
   orthographic: 0
   orthographic size: 5
   m_Depth: -1
@@ -336,6 +336,7 @@ GameObject:
   - component: {fileID: 742492490843933616}
   - component: {fileID: 3343828815226579131}
   - component: {fileID: 3856546185227403545}
+  - component: {fileID: 8109422194358874723}
   - component: {fileID: 5425152495770874944}
   - component: {fileID: 6926900956902271417}
   - component: {fileID: 4282063556381994115}
@@ -476,12 +477,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0dcad7b34b6ecc74dbb8d7572e3674dc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  cam: {fileID: 0}
   moveSpeed: 10
   jumpPower: 10
   dashPower: 10
   dashCoolTime: 3
   maxVelocity: 1
+  jumpDelay: 0.2
   wallCheckDistance: 1
+  isWallLeft: 0
+  isWallRight: 0
+  canJump: 0
   wallRunForce: 0
   wallJumpUpForce: 0
   wallJumpSideForce: 0
@@ -489,13 +495,12 @@ MonoBehaviour:
   maxHp: 100
   hpRecoveryAmountPerSec: 10
   recoveryCoolTime: 5
-  reloadCoolTime: 1
-  isJumping: 0
+  isGround: 0
   hpBar: {fileID: 0}
   audioSource: {fileID: 0}
-  audioFire: {fileID: 0}
   audioWallJump: {fileID: 0}
   audioRush: {fileID: 0}
+  state: 0
 --- !u!114 &3343828815226579131
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -529,6 +534,27 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7b8435b8dcaf0514bb84548ce7e01edb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  audioFire: {fileID: 0}
+  audioSource: {fileID: 0}
+  reloadCoolTime: 0
+--- !u!114 &8109422194358874723
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5908378714738791989}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d2c706f3a8695854d938dbcb51384861, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  moveSpeed: 10
+  maxVelocity: 5
+  wallCheckDistance: 1
+  wallRunForce: 0
+  wallJumpUpForce: 0
+  wallJumpSideForce: 0
 --- !u!65 &5425152495770874944
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1122,7 +1148,7 @@ PrefabInstance:
     - target: {fileID: 7682213458616953240, guid: 742f72a22d5e24c0eb6d1b58f4bdeca6,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.284
+      value: 0.445
       objectReference: {fileID: 0}
     - target: {fileID: 7682213458616953240, guid: 742f72a22d5e24c0eb6d1b58f4bdeca6,
         type: 3}
@@ -1132,7 +1158,7 @@ PrefabInstance:
     - target: {fileID: 7682213458616953240, guid: 742f72a22d5e24c0eb6d1b58f4bdeca6,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0.585
+      value: 0.591
       objectReference: {fileID: 0}
     - target: {fileID: 7682213458616953240, guid: 742f72a22d5e24c0eb6d1b58f4bdeca6,
         type: 3}
