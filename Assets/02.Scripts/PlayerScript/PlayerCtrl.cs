@@ -11,8 +11,9 @@ public class PlayerCtrl : MonoBehaviour
     
    
     public float wallJumpUpForce;
-    public float wallBounceForce;
     public float wallJumpInputForce;
+    public float wallJumpSideForce;
+    public float wallJumpForwardForce;
     public float jumpPower = 10.0f;
     public float dashPower = 1.0f;
 
@@ -35,11 +36,12 @@ public class PlayerCtrl : MonoBehaviour
     {
         tr = ps.tr;
         rb = ps.rb;
-        jumpPower = 20.0f;
+        jumpPower = 15.0f;
         dashPower = 20.0f;
-        wallJumpUpForce = 17.0f;
-        wallBounceForce = 1.0f;
-        wallJumpInputForce = 1.0f;
+        wallJumpUpForce = 10.0f;
+        wallJumpInputForce = 0f;
+        wallJumpSideForce = 2f;
+        wallJumpForwardForce = 10f;
 
     }
     // Update is called once per frame
@@ -71,7 +73,8 @@ public class PlayerCtrl : MonoBehaviour
     void Jump()
     {
         ps.JumpOff();
-        rb.AddForce(new Vector3(0, jumpPower, 0), ForceMode.Impulse);        
+        rb.AddForce(new Vector3(0, jumpPower, 0), ForceMode.Impulse);
+        ps.isGround = false;
     }
 
 
@@ -105,9 +108,15 @@ public class PlayerCtrl : MonoBehaviour
         float h = ps.h;
         float v = ps.v;
         Vector3 wallNormal = ps.theWall.normal;
-        Vector3 inputDir = new(h, 0, v);
-        Vector3 dir = transform.up * wallJumpUpForce + wallNormal * wallBounceForce + inputDir * wallJumpInputForce;
-
+        Vector3 inputDir = new Vector3(h, 0, v).normalized;
+        inputDir = Camera.main.transform.TransformDirection(inputDir);
+        inputDir.y = 0;
+        /*Vector3 dir = transform.up * wallJumpUpForce + wallNormal * wallBounceForce + inputDir * wallJumpInputForce;
+*/
+        Vector3 wallForward = Vector3.Cross(wallNormal, transform.up);
+        if ((inputDir - wallForward).magnitude > (inputDir - -wallForward).magnitude)
+            wallForward = -wallForward;
+        Vector3 dir = transform.up * wallJumpUpForce + wallNormal * wallJumpSideForce + wallForward * wallJumpForwardForce + inputDir * wallJumpInputForce;
         rb.velocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
         rb.AddForce(dir, ForceMode.Impulse);
         ps.PlaySound("WALLJUMP");

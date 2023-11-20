@@ -14,7 +14,9 @@ public class FocusCtrl : MonoBehaviour
     public Slider focusBar;
     public GameObject sliderFill;
     public Image fill;
-    float rushSpeed = 15f;
+    float rushSpeed = 3f;
+    List<GameObject> points = new();
+
 
 
     CapsuleCollider p_cscl;
@@ -25,12 +27,11 @@ public class FocusCtrl : MonoBehaviour
     private float rushPower; // 돌진에 적용되는 힘
     private float detectionRange; // 조준상태에서 갈고리 포인트 탐지 범위
     private float focusingRange; // 화면중 일부 범위내의 갈고리만 탐지되도록 하는 값
-
     public float enemyRushPower;
 
     public float focusingGage; // 집중 게이지, 초당 1회복
     public float maxFocusingGage; // 집중 최대 게이지
-
+    bool isStomping;
     bool focusButton;
 
     [SerializeField]
@@ -55,7 +56,7 @@ public class FocusCtrl : MonoBehaviour
         p_tr = player.GetComponent<Transform>();
         p_cscl = player.GetComponent<CapsuleCollider>();
         p_bxcl = player.GetComponent<BoxCollider>();
-
+        ps = GetComponent<PlayerState>();
         target = null;
         targetDistance = 100.0f;
 
@@ -67,6 +68,7 @@ public class FocusCtrl : MonoBehaviour
         enemyRushPower = 5.0f;
         focusingGage = maxFocusingGage;
         state = State.IDLE;
+
 
         fill = sliderFill.GetComponent<Image>();
     }
@@ -86,15 +88,20 @@ public class FocusCtrl : MonoBehaviour
             {
                 GameManager.instance.EnableSlowMode();
                 ConsumeFocusingGage();
-                player.GetComponent<FireCtrl>().SetReloadCoolTime(0.3f);
+                player.GetComponent<FireCtrl>().SetReloadCoolTime(0.1f);
                 CheckHookPoint();
                 if(!focusButton)
                 {
+                    CheckTargetState();
                     if (target != null)
                         StartCoroutine(Rush());
                     else
                         state = State.IDLE;
                 }
+            }
+            else
+            {
+                GameManager.instance.DisableSlowMode();
             }
             if (state == State.IDLE)
             {
@@ -148,7 +155,6 @@ public class FocusCtrl : MonoBehaviour
         {
             p_cscl.isTrigger = true;
             p_bxcl.isTrigger = true;
-            GameManager.instance.DisableSlowMode();
         }
         else if (focusingGage <= 0.0f)//러시가 아닌데 집중게이지가 없을때
         {
@@ -156,9 +162,16 @@ public class FocusCtrl : MonoBehaviour
             focusingGage = 0;
 
         }
+        else if (state == State.EXHAUST)
+        {
+            if(focusingGage == maxFocusingGage)
+            {
+                state = State.IDLE;
+            }
+        }
         else//러시도 아니고 집중게이지도 있을 때
         {
-            if (Input.GetMouseButtonDown(1))
+            if (Input.GetMouseButtonDown(1) )
             {
                 targetDistance = 100.0f;
                 state = State.FOCUS;
@@ -174,12 +187,12 @@ public class FocusCtrl : MonoBehaviour
             cam.nearClipPlane = (Mathf.Lerp(cam.nearClipPlane, 0.3f, (0.2f)));//줌아웃 빠르게 하기. 최소에서 최대가는데 0.05초
 
         }
-        else if (state == State.RUSH)
+        else if (state == State.RUSH && !isStomping)
         {
             cam.fieldOfView = (Mathf.Lerp(cam.fieldOfView, 140f, (0.1f)));//줌아웃 빠르게 하기. 최소에서 최대가는데 0.05초
             cam.nearClipPlane = (Mathf.Lerp(cam.nearClipPlane, 0.1f, (0.2f)));//줌아웃 빠르게 하기. 최소에서 최대가는데 0.05초
         }
-        else if (state == State.IDLE || state == State.EXHAUST)
+        else if (state == State.IDLE || state == State.EXHAUST || isStomping)
         {
             cam.fieldOfView = (Mathf.Lerp(cam.fieldOfView, 90f, (0.2f)));//줌아웃 빠르게 하기. 최소에서 최대가는데 0.05초
             cam.nearClipPlane = (Mathf.Lerp(cam.nearClipPlane, 0.3f, (0.2f)));//줌아웃 빠르게 하기. 최소에서 최대가는데 0.05초
@@ -190,15 +203,17 @@ public class FocusCtrl : MonoBehaviour
     // 집중 상태에서 화면 내에 가장 가까운 갈고리 포인트를 찾는 함수
     void CheckHookPoint()
     {
-        Collider[] colliders = Physics.OverlapSphere(transform.position, detectionRange);
-        List<GameObject> points = new List<GameObject>();
-        foreach (Collider collider in colliders)
-        {
-            if (collider.gameObject.CompareTag("_HookPoint")|| collider.gameObject.CompareTag("_EnemyHookPoint"))
+        /*    Collider[] colliders = Physics.OverlapSphere(transform.position, detectionRange); // 이거 find 계속하는게 성능상 무리갈 거 같아서 해본건데 이게 더 느리네요. 대신 배열 생성을 start단에서 합니다.
+            List<GameObject> points = new List<GameObject>();
+            foreach (Collider collider in colliders)
             {
-                points.Add(collider.gameObject);
-            }
-        }
+                if (collider.gameObject.CompareTag("_HookPoint")|| collider.gameObject.CompareTag("_EnemyHookPoint"))
+                {
+                    points.Add(collider.gameObject);
+                }
+            }*/ // 배열 대신에 List써서 start에서 생성했습니다. 혹여나 이후에 Hook 붙어있는 오브젝트 생성
+
+        
         // 갈고리 포인트 + 적 갈고리 포인트 목록
 
         //이전 타겟이 아직도 조건을 충족시키는지 확인
@@ -211,8 +226,14 @@ public class FocusCtrl : MonoBehaviour
 
                 RaycastHit hit;
                 Physics.Raycast(point.transform.position, cam.transform.position - point.transform.position, out hit); //가로막고있나 없나
-                if (hit.transform.gameObject == null || !hit.transform.gameObject.CompareTag("_Player")) continue;
-
+                if (hit.transform.gameObject == null || !hit.transform.gameObject.CompareTag("_Player") || hit.distance>detectionRange) continue;
+                /*if (point.CompareTag("_EnemyHookPoint"))
+                {
+                    if (Vector3.Distance(p_rb.position, point.transform.position) < 2f)  //에너미 후크는 가까우면 못날라가게 바꿧어용. 추후 근접공격 추가하고싶음. 근접공격 없더라도 날아갔다가 다시 와서 때리는 게 더 재밋음
+                        point.GetComponent<HookPoint>().ChangeState();
+                    else
+                        point.GetComponent<HookPoint>().state = HookPoint.State.ONABLE;
+                }*/
                 if (_state == HookPoint.State.ONABLE) // 갈고리 사용 가능 상태
                 {
                     Vector3 screenPoint = cam.WorldToViewportPoint(point.transform.position); // 해당 갈고리 화면상 위치
@@ -221,7 +242,7 @@ public class FocusCtrl : MonoBehaviour
                         Vector2 screenPoint2D = screenPoint; // 2D 좌표로 변경
                         Vector2 tmp = new Vector2(0.5f, 0.5f) - screenPoint2D; // 중앙 값과 차이만 낢김
                         if (tmp.magnitude < targetDistance && screenPoint.z >= 0) // 기존 타겟의 거리보다 가까우면 변경
-                        {
+                        {                            
                             if (target != null) target.GetComponent<HookPoint>().state = HookPoint.State.ONABLE;
                             target = point;
                             target.GetComponent<HookPoint>().state = HookPoint.State.TARGETED;
@@ -232,36 +253,6 @@ public class FocusCtrl : MonoBehaviour
             }
         }
         
-    }
-
-    // 집중 상태 관련 함수
-    void Focus()
-    {
-        // 마우스 오른쪽을 누르면 집중 상태 돌입
-        if (Input.GetMouseButtonDown(1))
-        {
-            state = State.FOCUS;
-        }
-        // 마우스 오른쪽을 떼면 집중 상태해제
-        else if (Input.GetMouseButtonUp(1) && state == State.FOCUS)
-        {
-            CheckTargetState();
-            // 타겟이 있을 때만 돌진
-            if(target != null)
-            {
-                GameManager.instance.DisableSlowMode();
-                p_cscl.isTrigger = true; // 일시적으로 충돌판정 X
-                p_bxcl.isTrigger = true; // 일시적으로 충돌판정 X
-                target.GetComponent<HookPoint>().ChangeState();
-                Rush();
-
-            }
-            else
-            {
-                GameManager.instance.DisableSlowMode();
-                state = State.IDLE;
-            }
-        }
     }
 
 
@@ -316,29 +307,41 @@ public class FocusCtrl : MonoBehaviour
     }
     private IEnumerator Rush()
     {
+        target.transform.LookAt(player.transform.position);
+        GameManager.instance.DisableSlowMode();
+        ps.ChangeState(PlayerState.State.RUSH);
+        state = State.RUSH;
+        bool isEnemy = target.CompareTag("_EnemyHookPoint");
+        ps.PlaySound("RUSH");
         float h;
         Vector3 start = p_rb.position;
         Vector3 destination = target.transform.position;
+        Vector3 destFor = target.transform.forward - new Vector3(0, target.transform.forward.y, 0);
+        destFor.Normalize();
+        p_rb.velocity = Vector3.zero;
+        float dist = Vector3.Distance(start, destination);
         GameManager.instance.DisableSlowMode();
-        ps.ChangeState(PlayerState.State.RUSH);
         target.GetComponent<HookPoint>().ChangeState();
-        state = State.RUSH;
-        if (target.CompareTag("_HookPoint"))
+        if (isEnemy)
         {
-            h = 1;
+            h = 10;
+            destination += destFor * 0.5f;
+            destination.y += 0.3f;
         }
         else
         {
-            h = 5;
-            destination.y += 1;
+            h = 3;
+            destination += destFor * 1f;
+            destination.y += 1f;
         }
-        Vector3 stopOver = Vector3.Lerp(start, destination, 0.5f);
+        Vector3 stopOver = Vector3.Lerp(start, destination, 0.7f);
         stopOver.y += h;
         Vector3 mid = (stopOver + destination) / 2;
         mid.y = stopOver.y;
         Vector3 p0 = p_rb.position;
         Vector3 finalDir = Vector3.zero;
-        for (float t = 0; t < 1; t += Time.deltaTime * rushSpeed)
+        float curSpeed = rushSpeed + (dist / 10);
+        for (float t = 0; t < 1; t += Time.deltaTime * curSpeed)
         {
             float u = 1 - t;
             float tt = t * t;
@@ -354,36 +357,44 @@ public class FocusCtrl : MonoBehaviour
             finalDir = p - p0;
             p_rb.MovePosition(p);
             p0 = p;
-            yield return null;
+            if(curSpeed > rushSpeed - 1)
+                curSpeed *= 0.9f;
+            float _dist = Vector3.Distance(p, destination);
+            yield return null;            
         }
-        float _dist = Vector3.Distance(p_rb.position, destination);
-        if (_dist <= 1f)
+        p_rb.MovePosition(destination);
+        if (isEnemy)
         {
-            p_rb.MovePosition(destination);
-            if (target.CompareTag("_HookPoint"))
-            {
-                p_rb.velocity = finalDir / 5;
-            }
-            else
-            {
-                p_rb.velocity = new Vector3(0f, -0.1f, 0);
-                yield return new WaitForSeconds(0.15f);
-                target.GetComponentInParent<EnemyCtrl>().SendMessage("EnemyDie"); // 적 처치 메시지 보내기
-                yield return new WaitForSeconds(0.2f); 
-                StompEnemy();
-            }
-            ps.ChangeState(PlayerState.State.IDLE);
-            target = null;
-            targetDistance = 100;
+            GameManager.instance.DisableSlowMode();
+            isStomping = true;
+            p_rb.velocity = finalDir.normalized * 2;
+            target.GetComponentInParent<EnemyCtrl>().SendMessage("EnemyDie"); // 적 처치 메시지 보내기
+            yield return new WaitForSeconds(0.3f);
+            StompEnemy();
         }
-
+        else
+        {
+            p_rb.velocity = finalDir.normalized * 6;
+        }
+        ps.JumpOff();
+        ps.DashOn();
+        ps.ChangeState(PlayerState.State.IDLE);
+        state = State.IDLE;
+        target = null;
+        targetDistance = 100;
     }
     void StompEnemy()
     {
-        ps.JumpOff();
-        ps.DashOn();
-        p_rb.AddForce(Vector3.up * 27.0f, ForceMode.Impulse);
+        p_rb.AddForce(Vector3.up * 20.0f, ForceMode.Impulse);
         focusingGage = maxFocusingGage;
+        isStomping = false;
     }
-
+    public void AddPoint(GameObject point)
+    {
+        points.Add(point);
+    }
+    public void RemovePoint(GameObject point)
+    {
+        points.Remove(point);
+    }
 }

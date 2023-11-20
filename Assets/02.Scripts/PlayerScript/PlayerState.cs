@@ -19,7 +19,7 @@ public class PlayerState : MonoBehaviour
     public float v;
 
     // 벽타기 관련 코드 (영상 참조)
-    public float wallCheckDistance = 1.0f;
+    public float wallCheckDistance = 1.5f;
     private int groundLayer;
     private int wallLayer;
     public RaycastHit theWall;
@@ -37,6 +37,7 @@ public class PlayerState : MonoBehaviour
 
     [SerializeField]
     public bool isGround; // 지금 땅인지
+    public bool _isGround = false;
     public bool dashAvailable; // 대쉬 사용 가능 여부
     public bool isDamaged; // 최근 5초내 피해 여부
     public bool isWall;
@@ -93,6 +94,7 @@ public class PlayerState : MonoBehaviour
         recoveryCoolTime = 5.0f;
         dashCoolTime = 2.0f;
         dashAvailable = true;
+        jumpAvailable = true;
         isDamaged = false;
         isGround = true;
         recoveryCoroutine = RecoveryCoolTime();
@@ -103,7 +105,11 @@ public class PlayerState : MonoBehaviour
         tr = GetComponent<Transform>();
         rb = GetComponent<Rigidbody>();
         playerGrav = GetComponent<ConstantForce>();
+        playerGrav.force = new Vector3(0, -20, 0);
         audioSource = GetComponent<AudioSource>();
+        isSpaceUp = false;
+        isSpaceDown = false;
+        isSpaceOn = false;
         cam = Camera.main;
         // x축 y축 회전 잠금
         rb.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
@@ -124,7 +130,7 @@ public class PlayerState : MonoBehaviour
             rb.angularVelocity = Vector3.zero; // 오브젝트 충돌시 떨림 방지용
             PlayerFall(); // 플레이어 낙하 확인 함수
 
-            if (state == State.IDLE && isWall == true && isSpaceDown) //벽타기 시작하는지 보기
+            if (state == State.IDLE && isWall == true && isSpaceOn) //벽타기 시작하는지 보기
             {
                 StartWallRun();
             }
@@ -230,16 +236,21 @@ public class PlayerState : MonoBehaviour
     // 플레이어가 땅에 닿았을 경우 점프 횟수를 초기화하는 함수, check ground와 groundCheck 통합. 한번만부르게
     void GroundCheck()
     {
-        if (rb.velocity.y < 0)
+        if (rb.velocity.y <= 0)
         {
-            if (Physics.Raycast(rb.position, Vector3.down, out _, 1.1f, groundLayer))
+            if (Physics.Raycast(rb.position, Vector3.down, out _, 1.3f, groundLayer))
             {
-                rb.velocity = Vector3.zero;
-                JumpOff();
-                dashAvailable = true;
-                isGround = true;
+                if (isGround && !jumpAvailable)
+                {
+                    JumpOn();
+                    rb.velocity = Vector3.zero;
+                    dashAvailable = true;
+                }
+                else if (!isGround)
+                    isGround = true;
+
             }
-            else if (isGround == true)
+            else if (isGround)
             {
                 StartCoroutine(CanJumpDelay());
                 isGround = false;

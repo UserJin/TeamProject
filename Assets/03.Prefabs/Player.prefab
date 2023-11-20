@@ -336,10 +336,12 @@ GameObject:
   - component: {fileID: 742492490843933616}
   - component: {fileID: 3343828815226579131}
   - component: {fileID: 3856546185227403545}
-  - component: {fileID: 8109422194358874723}
   - component: {fileID: 5425152495770874944}
   - component: {fileID: 6926900956902271417}
   - component: {fileID: 4282063556381994115}
+  - component: {fileID: 1973467394876389001}
+  - component: {fileID: 3518327659883944678}
+  - component: {fileID: 2332951114164399190}
   m_Layer: 0
   m_Name: Player
   m_TagString: _Player
@@ -477,30 +479,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0dcad7b34b6ecc74dbb8d7572e3674dc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cam: {fileID: 0}
-  moveSpeed: 10
+  wallJumpUpForce: 0
+  wallJumpInputForce: 0
+  wallJumpSideForce: 0
+  wallJumpForwardForce: 0
   jumpPower: 10
   dashPower: 10
-  dashCoolTime: 3
-  maxVelocity: 1
-  jumpDelay: 0.2
-  wallCheckDistance: 1
-  isWallLeft: 0
-  isWallRight: 0
-  canJump: 0
-  wallRunForce: 0
-  wallJumpUpForce: 0
-  wallJumpSideForce: 0
-  hp: 100
-  maxHp: 100
-  hpRecoveryAmountPerSec: 10
-  recoveryCoolTime: 5
-  isGround: 0
-  hpBar: {fileID: 0}
   audioSource: {fileID: 0}
   audioWallJump: {fileID: 0}
   audioRush: {fileID: 0}
-  state: 0
 --- !u!114 &3343828815226579131
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -537,24 +524,6 @@ MonoBehaviour:
   audioFire: {fileID: 0}
   audioSource: {fileID: 0}
   reloadCoolTime: 0
---- !u!114 &8109422194358874723
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5908378714738791989}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d2c706f3a8695854d938dbcb51384861, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  moveSpeed: 10
-  maxVelocity: 5
-  wallCheckDistance: 1
-  wallRunForce: 0
-  wallJumpUpForce: 0
-  wallJumpSideForce: 0
 --- !u!65 &5425152495770874944
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -684,6 +653,77 @@ ConstantForce:
   m_RelativeForce: {x: 0, y: 0, z: 0}
   m_Torque: {x: 0, y: 0, z: 0}
   m_RelativeTorque: {x: 0, y: 0, z: 0}
+--- !u!114 &1973467394876389001
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5908378714738791989}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c82fb5384eebb43419ff57e8724a7f3b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  wallRunForce: 0
+--- !u!114 &3518327659883944678
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5908378714738791989}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf4f5d06f71149d43af8079926540eb8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  moveSpeed: 10
+--- !u!114 &2332951114164399190
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5908378714738791989}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 05dd829415f2a7b4aa675aaa008a03a8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cam: {fileID: 0}
+  moveSpeed: 10
+  dashCoolTime: 2
+  jumpDelay: 0.2
+  wallJumpDelay: 0.2
+  h: 0
+  v: 0
+  wallCheckDistance: 1.5
+  isWallLeft: 0
+  isWallRight: 0
+  jumpAvailable: 0
+  wallJumpAvailable: 0
+  hp: 0
+  maxHp: 100
+  hpRecoveryAmountPerSec: 10
+  recoveryCoolTime: 5
+  isGround: 0
+  _isGround: 0
+  dashAvailable: 0
+  isDamaged: 0
+  isWall: 0
+  tr: {fileID: 0}
+  rb: {fileID: 0}
+  hpBar: {fileID: 0}
+  idm: {fileID: 0}
+  audioSource: {fileID: 0}
+  audioWallJump: {fileID: 0}
+  audioRush: {fileID: 0}
+  isSpaceOn: 0
+  isSpaceUp: 0
+  isSpaceDown: 0
+  isShiftDown: 0
+  state: 0
 --- !u!1 &7229336006745440830
 GameObject:
   m_ObjectHideFlags: 0

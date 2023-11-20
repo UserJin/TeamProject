@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class HookPoint : MonoBehaviour
 {
+    public bool isAdded;
     public enum State
     {
         DISABLE,
@@ -19,9 +20,9 @@ public class HookPoint : MonoBehaviour
     {
         state = State.ONABLE;
         player = GameObject.FindGameObjectWithTag("_Player");
+        player.GetComponent<FocusCtrl>().AddPoint(this.gameObject);
 
     }
-
     // Update is called once per frame
     void Update()
     {
@@ -37,7 +38,6 @@ public class HookPoint : MonoBehaviour
         else if(state == State.TARGETED)
         {
             gameObject.GetComponent<Renderer>().material.color = Color.yellow;
-            transform.LookAt(player.transform.position);
         }
         else
         {
@@ -61,5 +61,8 @@ public class HookPoint : MonoBehaviour
         yield return new WaitForSeconds(2.0f);
         state = State.ONABLE;
     }
-
+    private void OnDisable()
+    {
+        player.GetComponent<FocusCtrl>().RemovePoint(this.gameObject);
+    }
 }

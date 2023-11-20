@@ -40,7 +40,7 @@ public class WallRunMovement : MonoBehaviour
 
     void InitPlayer()
     {
-        wrSpeed = 10.0f;
+        wrSpeed = 20.0f;
 
         ps = GetComponent<PlayerState>();
         tr = GetComponent<Transform>();
@@ -50,14 +50,15 @@ public class WallRunMovement : MonoBehaviour
     // 캐릭터 벽타기 이동 함수(Update)
     void Move()
     {
-        rb.velocity = new Vector3(rb.velocity.x, 0, rb.velocity.z);
+        rb.velocity = Vector3.zero;
         //Debug.Log(rb.velocity);
 
         Vector3 wallNormal = theWall.normal;
 
         Vector3 wallForward = Vector3.Cross(wallNormal, transform.up);
-        Vector3 inputDir = new(h, 0, v);
-
+        Vector3 inputDir = new Vector3(h, 0, v);
+        inputDir = Camera.main.transform.TransformDirection(inputDir);
+        inputDir.y = 0;
         if ((inputDir - wallForward).magnitude > (inputDir - -wallForward).magnitude)
             wallForward = -wallForward;
         
