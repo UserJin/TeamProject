@@ -12,10 +12,9 @@ public class PlayerState : MonoBehaviour
     // 체력, 속도
     // 디버깅하기 쉽게 public으로 선언, 이후에 private로 변경 필요
     public float moveSpeed = 10.0f;
-    public float jumpPower = 10.0f;
-    public float dashPower = 1.0f;
-    public float dashCoolTime = 2.0f; // 대쉬 사용가능 쿨타임
+   public float dashCoolTime = 2.0f; // 대쉬 사용가능 쿨타임
     public float jumpDelay = 0.2f;
+    public float wallJumpDelay = 0.2f;
     public float h;
     public float v;
 
@@ -27,10 +26,8 @@ public class PlayerState : MonoBehaviour
     public bool isWallLeft;
     public bool isWallRight;
     public bool jumpAvailable;
-    public float wallRunForce;
-    public float wallJumpUpForce;
-    public float wallBounceForce;
-    public float wallJumpInputForce;
+    public bool wallJumpAvailable;
+
 
     public float hp; // 현재 체력
     public float maxHp = 100.0f; // 최대 체력
@@ -46,6 +43,8 @@ public class PlayerState : MonoBehaviour
     public Transform tr;
     public Rigidbody rb;
     public Slider hpBar;
+    public IdleMovement idm;
+
 
     public AudioSource audioSource;
 
@@ -54,8 +53,8 @@ public class PlayerState : MonoBehaviour
 
     private GameObject rushSound;
     private GameObject wallJumpSound;
-    private IdleMovement idm;
     private WallRunMovement wrm;
+    private FireCtrl fctrl;
     private ConstantForce playerGrav;
 
 
@@ -80,6 +79,7 @@ public class PlayerState : MonoBehaviour
     {
         idm = GetComponent<IdleMovement>();
         wrm = GetComponent<WallRunMovement>();
+        fctrl = GetComponent<FireCtrl>();
         rushSound = gameObject.transform.Find("rushSound").gameObject;
         wallJumpSound = gameObject.transform.Find("wallJumpSound").gameObject;
         InitPlayer();
@@ -87,8 +87,7 @@ public class PlayerState : MonoBehaviour
     void InitPlayer()
     {
         moveSpeed = 9.0f;
-        jumpPower = 20.0f;
-        dashPower = 20.0f;
+        maxHp = 100.0f;
         hp = maxHp;
         hpRecoveryAmountPerSec = 10.0f;
         recoveryCoolTime = 5.0f;
@@ -99,9 +98,6 @@ public class PlayerState : MonoBehaviour
         recoveryCoroutine = RecoveryCoolTime();
         groundLayer = 1 << LayerMask.NameToLayer("GROUND");
         wallLayer = 1 << LayerMask.NameToLayer("WALL");
-        wallJumpUpForce = 17.0f;
-        wallBounceForce = 1.0f;
-        wallJumpInputForce = 1.0f;
         h = 0;
         v = 0;
         tr = GetComponent<Transform>();
@@ -115,41 +111,54 @@ public class PlayerState : MonoBehaviour
         GameManager.instance.OnGamePause += GamePause;
     }
     // Update is called once per frame
-    void Update()
+    void Update() //각 스크립트 활성 비활성으로 구현, update 순서 가장 먼저하게 고정해서 state를 고정함으로써 입력 움직임간 지연 없애기. 오류 방지. 점프 벽점프 대쉬는 playerctrl에 잇음.
     {
         if (state != State.DIE)
         {
+            CheckHp();
             Wallcheck();
             MoveInput();
             ShiftInput();
             SpaceInput();
-            GroundCheck();
-            CheckHp();
             Recovery();
             rb.angularVelocity = Vector3.zero; // 오브젝트 충돌시 떨림 방지용
             PlayerFall(); // 플레이어 낙하 확인 함수
-            if (state == State.WALLRUN)
+
+            if (state == State.IDLE && isWall == true && isSpaceDown) //벽타기 시작하는지 보기
+            {
+                StartWallRun();
+            }
+            if (state == State.WALLRUN) //벽타기 도중
             {
                 if (!(isWall))
                 {
                     ChangeState(PlayerState.State.IDLE);
+                    StartCoroutine(CanWallJumpDelay());
                 }
                 else
                 {
+                    WallJumpOn();
                     wrm.enabled = true;
                 }
             }
             else
                 wrm.enabled = false;
-            if (state == State.IDLE)
+            if (state == State.IDLE) //기본 상태
             {
+                GroundCheck();
                 idm.enabled = true;
                 UseGravity(true);
+                fctrl.enabled = true;
             }
             else
             {
                 idm.enabled = false;
                 UseGravity(false);
+                fctrl.enabled = false;
+            }
+            if(state == State.RUSH)
+            {
+
             }
         }
     }
@@ -179,11 +188,21 @@ public class PlayerState : MonoBehaviour
         if (Input.GetKeyUp(KeyCode.Space))
             isSpaceUp = true;
         else if (Input.GetKeyDown(KeyCode.Space))
+        {
             isSpaceDown = true;
+        }
+            
         if (Input.GetKey(KeyCode.Space))
             isSpaceOn = true;
     }
-
+    void StartWallRun()
+    {
+        state = State.WALLRUN;
+        JumpOff();
+        WallJumpOn();
+        DashOn();
+        
+    }
     // 캐릭터의 옆에 벽이 있는지 확인하는 함수
     void Wallcheck()
     {
@@ -216,8 +235,7 @@ public class PlayerState : MonoBehaviour
             if (Physics.Raycast(rb.position, Vector3.down, out _, 1.1f, groundLayer))
             {
                 rb.velocity = Vector3.zero;
-                StopCoroutine(CanJumpDelay());
-                jumpAvailable = true;
+                JumpOff();
                 dashAvailable = true;
                 isGround = true;
             }
@@ -240,17 +258,17 @@ public class PlayerState : MonoBehaviour
     }
 
     // 대쉬 쿨타임 코루틴
-    IEnumerator DashCoolTime()
+    public IEnumerator DashCoolTime()
     {
         yield return new WaitForSeconds(dashCoolTime);
         dashAvailable = true;
     }
-    void DashOn()
+    public void DashOn()
     {
         StopCoroutine(DashCoolTime());
         dashAvailable = true;
     }
-    void DashOff()
+    public void DashOff()
     {
         StopCoroutine(DashCoolTime());
         dashAvailable = false;
@@ -258,29 +276,44 @@ public class PlayerState : MonoBehaviour
 
     // 회복 쿨타임 코루틴
     // 피격시 5초 동안 회복 불가능
-    IEnumerator RecoveryCoolTime()
+    public IEnumerator RecoveryCoolTime()
     {
         yield return new WaitForSeconds(recoveryCoolTime);
         isDamaged = false;
         recoveryCoroutine = RecoveryCoolTime();
     }
     //점프 사용가능 유예시간 코루틴
-    IEnumerator CanJumpDelay()
+    public IEnumerator CanJumpDelay()
     {
         yield return new WaitForSeconds(jumpDelay);
         jumpAvailable = false;
     }
-    void JumpOn()
+    public void JumpOn()
     {
         StopCoroutine(CanJumpDelay());
         jumpAvailable = true;
     }
-    void JumpOff()
+    public void JumpOff()
     {
         StopCoroutine(CanJumpDelay());
         jumpAvailable = false;
     }
-
+    //벽점프 사용가능 유예시간 코루틴
+    public IEnumerator CanWallJumpDelay()
+    {
+        yield return new WaitForSeconds(wallJumpDelay);
+        wallJumpAvailable = false;
+    }
+    public void WallJumpOn()
+    {
+        StopCoroutine(CanWallJumpDelay());
+        wallJumpAvailable = true;
+    }
+    public void WallJumpOff()
+    {
+        StopCoroutine(CanWallJumpDelay());
+        wallJumpAvailable = false;
+    }
 
 
     // 플레이어 피격시 발동 함수

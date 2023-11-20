@@ -29,7 +29,7 @@ public class BulletCtrl : MonoBehaviour
         if (other.gameObject.CompareTag("_Player"))
         {
             StopCoroutine(BulletDestroy());
-            other.gameObject.GetComponent<PlayerCtrl>().Hit(20.0f);
+            other.gameObject.GetComponent<PlayerState>().Hit(20.0f);
             Destroy(this.gameObject);
         }
     }

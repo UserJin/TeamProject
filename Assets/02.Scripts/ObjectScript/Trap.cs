@@ -8,7 +8,7 @@ public class Trap : MonoBehaviour
     {
         if(other.CompareTag("_Player"))
         {
-            other.GetComponent<PlayerCtrl>().Hit(20.0f);
+            other.GetComponent<PlayerState>().Hit(20.0f);
         }
     }
 }

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class FireCtrl : MonoBehaviour
 {
-    PlayerCtrl pc;
+    PlayerState ps;
     private bool isReload; // 재장전 상태 여부
     public AudioClip audioFire;
     public AudioSource audioSource;
@@ -18,7 +18,7 @@ public class FireCtrl : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        pc = GetComponent<PlayerCtrl>();
+        ps = GetComponent<PlayerState>();
         shotSound = gameObject.transform.Find("shotSound").gameObject;
         reloadCoolTime = 0.7f;
         isReload = false;
@@ -29,18 +29,21 @@ public class FireCtrl : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
         if (Input.GetMouseButtonDown(0) && !isReload)
         {
             Shoot();
         }
+    }
+    private void OnEnable()
+    {
+        reloadCoolTime = 0.7f;
     }
     // 공격 함수
     void Shoot()
     {
         RaycastHit _hit;  
         //Debug.DrawRay(cam.transform.position, cam.transform.forward * 100.0f, Color.red);
-        if (Physics.Raycast(pc.cam.transform.position, pc.cam.transform.forward * 100.0f, out _hit))
+        if (Physics.Raycast(ps.cam.transform.position, ps.cam.transform.forward * 100.0f, out _hit))
         {
             if (_hit.transform.gameObject.CompareTag("_Enemy"))
             {
@@ -59,7 +62,7 @@ public class FireCtrl : MonoBehaviour
         isReload = false;
     }
     //리로드 시간 다르게
-    public void setReloadCoolTime(float f)
+    public void SetReloadCoolTime(float f)
     {
         reloadCoolTime = f;
     }

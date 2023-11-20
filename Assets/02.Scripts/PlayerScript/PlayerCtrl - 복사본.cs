@@ -1,11 +1,11 @@
-using System.Collections;
+/*using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.SceneManagement;
 using UnityEngine;
 using UnityEngine.UI;
 using System;
 
-/*public class PlayerCtrl : MonoBehaviour
+public class PlayerCtrl : MonoBehaviour
 {
     Camera cam; // 메인 카메라를 담는 변수
 
