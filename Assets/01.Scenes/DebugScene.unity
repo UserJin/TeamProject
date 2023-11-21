@@ -612,6 +612,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b747fdd0139cbe3489288a8d1d97ac15, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isAdded: 0
   state: 0
 --- !u!135 &797786949
 SphereCollider:
@@ -922,6 +923,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b747fdd0139cbe3489288a8d1d97ac15, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isAdded: 0
   state: 0
 --- !u!135 &1027739730
 SphereCollider:
@@ -1477,6 +1479,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b747fdd0139cbe3489288a8d1d97ac15, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isAdded: 0
   state: 0
 --- !u!135 &1508806318
 SphereCollider:
@@ -1931,6 +1934,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b747fdd0139cbe3489288a8d1d97ac15, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isAdded: 0
   state: 0
 --- !u!135 &2007393011
 SphereCollider:
@@ -2516,6 +2520,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2332951114164399190, guid: 198eacd94aff3fe4fbd567ee3728d424,
+        type: 3}
+      propertyPath: hpBar
+      value: 
+      objectReference: {fileID: 18581143}
     - target: {fileID: 3343828815226579131, guid: 198eacd94aff3fe4fbd567ee3728d424,
         type: 3}
       propertyPath: focusBar

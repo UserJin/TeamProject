@@ -63,6 +63,6 @@ public class HookPoint : MonoBehaviour
     }
     private void OnDisable()
     {
-        player.GetComponent<FocusCtrl>().RemovePoint(this.gameObject);
+        if(player != null) player.GetComponent<FocusCtrl>().RemovePoint(this.gameObject);
     }
 }
